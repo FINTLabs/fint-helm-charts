@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: 
+    fint.stack: {{ .Values.name }}
+    fint.role: consumer
+    {{- include "fint-environment.labels" . | nindent 4 }}
+  name: consumer-{{ .Values.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {fint.stack: {{ .Values.name }}, fint.role: consumer}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
+  template:
+    metadata:
+      labels: {fint.stack: {{ .Values.name }}, fint.role: consumer}
+    spec:
+      containers:
+        - envFrom:
+          - configMapRef:
+              name: fint-environment
+          - secretRef:
+              name: fint-events-azure-eventhub
+          env:
+            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -Xmx{{ .Values.consumer.deployment.java.xmx }} -verbose:gc'}
+            - {name: fint.hazelcast.kubernetes.enabled, value: 'true'}
+            - {name: fint.hazelcast.kubernetes.namespace, value: default}
+            - {name: fint.hazelcast.kubernetes.labelName, value: fint.stack}
+            - {name: fint.hazelcast.kubernetes.labelValue, value: {{ .Values.name}}}
+            - {name: server.context-path, value: {{ .Values.consumer.deployment.contextPath }}}
+            {{- toYaml .Values.consumer.deployment.environments | nindent 6 }}
+            {{ if .Values.consumer.deployment.overrideOrgId }}
+            - {name: fint.consumer.default-org-id, value: {{ .Values.consumer.deployment.overrideOrgId.defaultOrgId }}}
+            - {name: fint.consumer.override-org-id, value: 'true'}
+            {{ end }}
+          image: "{{ .Values.consumer.deployment.image.repository }}:{{ .Values.consumer.deployment.image.tag }}"
+          imagePullPolicy: "{{ .Values.consumer.deployment.image.pullPolicy }}"
+          name: consumer-{{ .Values.name }}
+          ports:
+            - {containerPort: {{ .Values.consumer.deployment.port}}}
+          readinessProbe:
+            httpGet: 
+              path: {{ .Values.consumer.deployment.contextPath}}/health
+              port: {{ .Values.consumer.deployment.port}}
+            initialDelaySeconds: {{default 30 .Values.consumer.deployment.readinessProbe.initialDelaySeconds}}
+            timeoutSeconds: {{default 5 .Values.consumer.deployment.readinessProbe.timeoutSeconds}}
+          resources:
+            limits:
+              memory: {{ .Values.consumer.deployment.resources.limitsMemory }}
+              cpu: {{ .Values.consumer.deployment.resources.limitsCpu }}
+            requests:
+              memory: {{ .Values.consumer.deployment.resources.requestsMemory }}
+              cpu: {{ .Values.consumer.deployment.resources.requestsCpu }}
+      restartPolicy: Always

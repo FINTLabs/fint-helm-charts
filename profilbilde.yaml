@@ -1,0 +1,220 @@
+NAME: asdf
+LAST DEPLOYED: Tue Nov 23 12:51:20 2021
+NAMESPACE: default
+STATUS: pending-install
+REVISION: 1
+TEST SUITE: None
+USER-SUPPLIED VALUES:
+consumer:
+  deployment:
+    overrideOrgId:
+      enabled: true
+
+COMPUTED VALUES:
+consumer:
+  deployment:
+    contextPath: /profilbilde
+    image:
+      pullPolicy: IfNotPresent
+      repository: fintlabsacr.azurecr.io/consumer-profilbilde
+      tag: build.14
+    java:
+      xmx: 2G
+    overrideOrgId:
+      defaultOrgId: fintlabs.no
+      enabled: true
+    port: 8080
+    readinessProbe:
+      initialDelaySeconds: null
+      timeoutSeconds: null
+    resources:
+      limitsCpu: "2"
+      limitsMemory: 3Gi
+      requestsCpu: 250m
+      requestsMemory: 2Gi
+  service:
+    port: 8080
+name: profilbilde
+provider:
+  deployment:
+    contextPath: /profilbilde/provider
+    image:
+      pullPolicy: IfNotPresent
+      repository: fintlabsacr.azurecr.io/provider
+      tag: 2.3.0-alpha-2
+    java:
+      xmx: 2G
+    overrideOrgId:
+      defaultOrgId: fintlabs.no
+      enabled: "false"
+    port: 8080
+    readinessProbe:
+      initialDelaySeconds: null
+      timeoutSeconds: null
+    resources:
+      limitsCpu: "2"
+      limitsMemory: 3Gi
+      requestsCpu: 250m
+      requestsMemory: 2Gi
+  service: null
+
+HOOKS:
+MANIFEST:
+---
+# Source: fint-core-stack/templates/consumer-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}
+  labels: 
+    fint.stack: profilbilde
+    fint.role: consumer
+    helm.sh/chart: fint-core-stack-1.0.0
+    app.kubernetes.io/name: fint-core-stack
+    app.kubernetes.io/instance: asdf
+    app.kubernetes.io/version: "3.9.0"
+    app.kubernetes.io/managed-by: Helm
+
+  name: consumer-profilbilde
+spec:
+  type: LoadBalancer
+  ports:
+    - {name: '8080', port: 8080}
+  selector: {fint.stack: profilbilde, fint.role: consumer}
+---
+# Source: fint-core-stack/templates/provider-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}
+  labels: 
+    fint.stack: profilbilde
+    fint.role: provider
+    helm.sh/chart: fint-core-stack-1.0.0
+    app.kubernetes.io/name: fint-core-stack
+    app.kubernetes.io/instance: asdf
+    app.kubernetes.io/version: "3.9.0"
+    app.kubernetes.io/managed-by: Helm
+  name: provider-profilbilde
+spec:
+  type: LoadBalancer
+  ports:
+    - {name: '8080', port: 8080}
+  selector: {fint.stack: profilbilde, fint.role: provider}
+---
+# Source: fint-core-stack/templates/consumer-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: 
+    fint.stack: profilbilde
+    fint.role: consumer
+    helm.sh/chart: fint-core-stack-1.0.0
+    app.kubernetes.io/name: fint-core-stack
+    app.kubernetes.io/instance: asdf
+    app.kubernetes.io/version: "3.9.0"
+    app.kubernetes.io/managed-by: Helm
+  name: consumer-profilbilde
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {fint.stack: profilbilde, fint.role: consumer}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
+  template:
+    metadata:
+      labels: {fint.stack: profilbilde, fint.role: consumer}
+    spec:
+      containers:
+        - envFrom:
+          - configMapRef:
+              name: fint-environment
+          - secretRef:
+              name: fint-events-azure-eventhub
+          env:
+            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -Xmx2G -verbose:gc'}
+            - {name: fint.hazelcast.kubernetes.enabled, value: 'true'}
+            - {name: fint.hazelcast.kubernetes.namespace, value: default}
+            - {name: fint.hazelcast.kubernetes.labelName, value: fint.stack}
+            - {name: fint.hazelcast.kubernetes.labelValue, value: profilbilde}
+            - {name: server.context-path, value: /profilbilde}
+            
+            - {name: fint.consumer.default-org-id, value: fintlabs.no}
+            - {name: fint.consumer.override-org-id, value: 'true'}
+            
+          image: "fintlabsacr.azurecr.io/consumer-profilbilde:build.14"
+          imagePullPolicy: "IfNotPresent"
+          name: consumer-profilbilde
+          ports:
+            - {containerPort: 8080}
+          readinessProbe:
+            httpGet: 
+              path: /profilbilde/health
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          resources:
+            limits:
+              memory: 3Gi
+              cpu: 2
+            requests:
+              memory: 2Gi
+              cpu: 250m
+      restartPolicy: Always
+---
+# Source: fint-core-stack/templates/provider-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: 
+    fint.stack: profilbilde
+    fint.role: provider
+    helm.sh/chart: fint-core-stack-1.0.0
+    app.kubernetes.io/name: fint-core-stack
+    app.kubernetes.io/instance: asdf
+    app.kubernetes.io/version: "3.9.0"
+    app.kubernetes.io/managed-by: Helm
+
+  name: provider-profilbilde
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {fint.stack: profilbilde, fint.role: provider}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
+  template:
+    metadata:
+      labels: {fint.stack: profilbilde, fint.role: provider}
+    spec:
+      containers:
+        - envFrom:
+          - configMapRef:
+              name: fint-environment
+          - secretRef:
+              name: fint-events-azure-eventhub
+          env:
+            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -Xmx2G -verbose:gc'}
+            - {name: fint.events.orgIds, value: health.fintlabs.no}
+            - {name: fint.hazelcast.kubernetes.enabled, value: 'true'}
+            - {name: fint.hazelcast.kubernetes.namespace, value: default}
+            - {name: fint.hazelcast.kubernetes.labelName, value: fint.stack}
+            - {name: fint.hazelcast.kubernetes.labelValue, value: profilbilde}
+            - {name: fint.provider.max-number-of-emitters, value: '5'}
+            - {name: server.context-path, value: /profilbilde/provider}
+            - {name: fint.provider.assets.endpoint, value: 'https://admin.fintlabs.no/api/components/assets/profilbilde'}
+          image: "fintlabsacr.azurecr.io/provider:2.3.0-alpha-2"
+          imagePullPolicy: "IfNotPresent"
+          name: provider-profilbilde
+          ports:
+            - {containerPort: 8080}
+          readinessProbe:
+            httpGet: {path: /profilbilde/provider/health, port: 8080}
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+          resources:
+            limits: {memory: 3Gi, cpu: '2'}
+            requests: {memory: 2Gi, cpu: 250m}
+      restartPolicy: Always
+
