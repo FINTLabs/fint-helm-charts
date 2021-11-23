@@ -23,11 +23,9 @@ consumer:
       # defaultOrgId: fintlabs.no
     java:
       xmx: '2G'
-    environments: 
-      #- {name: fint.audit.mongo.buffer-size, value: "250000"}
-      #- {name: fint.audit.mongo.collection, value: auditEvents}
-      - fint.audit.mongo.buffer-size: "250000"
-      - fint.audit.mongo.collection: auditEvents
+    environments: {}
+      # - {name: <props>, value: "<value>"}
+
   service:
     port: 8080
 
@@ -54,5 +52,7 @@ provider:
     java:
       xmx: '2G'
     environments: {}
+      # - {name: <props>, value: "<value>"}
+
 
   service:

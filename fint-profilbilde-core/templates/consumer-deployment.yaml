@@ -30,7 +30,9 @@ spec:
             - {name: fint.hazelcast.kubernetes.labelName, value: fint.stack}
             - {name: fint.hazelcast.kubernetes.labelValue, value: {{ .Values.name}}}
             - {name: server.context-path, value: {{ .Values.consumer.deployment.contextPath }}}
-            {{- toYaml .Values.consumer.deployment.environments | nindent 6 }}
+            {{- range .Values.consumer.deployment.environments }}
+            - {name: {{ .name}}, value: {{ .value }}}
+            {{- end }}             
             {{ if .Values.consumer.deployment.overrideOrgId }}
             - {name: fint.consumer.default-org-id, value: {{ .Values.consumer.deployment.overrideOrgId.defaultOrgId }}}
             - {name: fint.consumer.override-org-id, value: 'true'}

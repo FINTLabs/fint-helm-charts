@@ -32,9 +32,9 @@ spec:
             - {name: fint.hazelcast.kubernetes.labelName, value: fint.stack}
             - {name: fint.hazelcast.kubernetes.labelValue, value: {{ .Values.name}}}
             - {name: server.context-path, value: {{ .Values.provider.deployment.contextPath }}}
-            {{ if .Values.provider.deployment.environments }}
-              {{- toYaml . | nindent 8 }}
-            {{ end }}
+            {{- range .Values.consumer.deployment.environments }}
+            - {name: {{ .name}}, value: {{ .value }}}
+            {{- end }} 
           image: "{{ .Values.provider.deployment.image.repository }}:{{ .Values.provider.deployment.image.tag }}"
           imagePullPolicy: "{{ .Values.provider.deployment.image.pullPolicy }}"
           name: provider-{{ .Values.name }}
