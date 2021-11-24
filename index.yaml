@@ -1,0 +1,36 @@
+apiVersion: v1
+entries:
+  fint-core-stack:
+  - apiVersion: v2
+    appVersion: 3.9.0
+    created: "2021-11-24T21:42:37.940709073Z"
+    description: A Helm chart for the FINT Core stack
+    digest: f20c502dc25f8228afc16cfae65f22427be86c3be4127fc92fc2379b2ca6fcf4
+    name: fint-core-stack
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-core-stack-1.0.0/fint-core-stack-1.0.0.tgz
+    version: 1.0.0
+  fint-environment:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-11-24T21:42:38.049063594Z"
+    description: A Helm chart for Kubernetes
+    digest: ee680d1a9532170fd2154c1d834728c6ade2572c5eab9dc217c7fbc920f48fde
+    name: fint-environment
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-environment-0.1.0/fint-environment-0.1.0.tgz
+    version: 0.1.0
+  fint-events-azure-eventhub-secrets:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2021-11-24T21:42:38.166715892Z"
+    description: A Helm chart for Kubernetes
+    digest: 855ba4360bc2f715f7dc79927edffe0adbfd58ffc631e241ee325b8e670d2ed3
+    name: fint-events-azure-eventhub-secrets
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-events-azure-eventhub-secrets-1.0.0/fint-events-azure-eventhub-secrets-1.0.0.tgz
+    version: 1.0.0
+generated: "2021-11-24T21:42:37.746527728Z"
