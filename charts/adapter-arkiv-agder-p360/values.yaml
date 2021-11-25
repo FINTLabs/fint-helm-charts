@@ -1,0 +1,87 @@
+# Default values for fint-environment.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+restartPolicy: Always
+
+name: adapter-arkiv-agder-p360
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+image: 
+  repository: fintlabsacr.azurecr.io/p360-rpc-arkiv-adapter:build.44
+  pullPolicy: IfNotPresent
+  tag: 2.3.0-alpha-2
+
+volumes:
+  - name: tempdir
+    emptyDir:
+      sizeLimit: 1G
+
+volumeMounts:
+  - name: tempdir
+    mountPath: /temp
+
+secretRef:
+  name: agder-arkiv-p360
+  
+resources:
+  limits:
+    memory: "2Gi"
+    cpu: "2"
+  requests:
+    memory: "1Gi"
+    cpu: "250m"
+
+    java:
+  xmx: '2G'
+environments: {}
+  # - {name: <props>, value: "<value>"}
+
+env:
+  - {name: fint.case.defaults.tilskuddfartoy.administrativEnhet, value: '200211'}
+  - {name: fint.case.defaults.tilskuddfartoy.arkivdel, value: '60001'}
+  - {name: fint.case.defaults.tilskuddfartoy.saksstatus, value: '5'}
+  - {name: fint.case.defaults.tilskuddfartoy.noekkelord, value: ''}
+  - {name: fint.case.defaults.tilskuddfartoy.korrespondansepartType, value: '5'}
+  - {name: fint.case.defaults.tilskuddfartoy.journalpostType, value: '110'}
+  - {name: fint.case.defaults.tilskuddfartoy.journalstatus, value: '6'}
+  - {name: fint.case.defaults.tilskuddfartoy.prosjekt, value: 'recno:200010'}
+  - {name: fint.case.defaults.tilskuddfartoy.dokumentstatus, value: '2'}
+  - {name: fint.case.defaults.tilskuddfartoy.dokumentType, value: '1'}
+  - {name: fint.case.defaults.tilskuddfartoy.tilknyttetRegistreringSom, value: '1'}
+  - {name: fint.case.defaults.tilskuddfartoy.saksmappeType, value: 'Sak'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.administrativEnhet, value: '200211'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.arkivdel, value: '60001'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.ordning, value: 'recno:60006'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.verdi, value: 'recno:300213'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.ordning, value: 'recno:60008'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.verdi, value: 'recno:340354'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.prosjekt, value: 'recno:200010'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksstatus, value: 'B'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.journalstatus, value: 'J'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.dokumentstatus, value: 'F'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.dokumentType, value: 'B'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.tilknyttetRegistreringSom, value: 'H'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksmappeType, value: 'Sak'}
+  - {name: fint.case.coding.dokumentType.B, value: '1'}
+  - {name: fint.case.coding.journalposttype.I, value: '110'}
+  - {name: fint.case.coding.journalposttype.U, value: '111'}
+  - {name: fint.case.coding.journalposttype.N, value: '113'}
+  - {name: fint.case.coding.journalposttype.X, value: '60005'}
+  - {name: fint.case.coding.journalposttype.S, value: '1'}
+  - {name: fint.case.coding.korrespondanseparttype.EA, value: '5'}
+  - {name: fint.case.coding.korrespondanseparttype.EM, value: '6'}
+  - {name: fint.case.coding.filformat.RA-PDF, value: 'PDF'}
+  - {name: fint.case.coding.filformat.RA-TEKST, value: 'TXT'}
+  - {name: fint.case.coding.filformat.RA-JPEG, value: 'JPG'}
+  - {name: fint.case.coding.filformat.RA-TIFF6, value: 'TIF'}
+  - {name: logging.level.no.fint.p360.data.p360, value: trace}
+  - {name: logging.level.no.fint.p360.data, value: debug}
+  - {name: logging.level.no.fint.p360.service, value: debug}
+  - {name: logging.level.no.fint.arkiv, value: debug}
+  - {name: fint.file-cache.directory, value: '/temp'}
