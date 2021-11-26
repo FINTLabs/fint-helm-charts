@@ -1,60 +1,45 @@
-charts/adapter-arkiv-agder-p360/templates/deployment.yamlapiVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.name }}
+  name: {{ .Values.innlandetfylke.name }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.innlandetfylke.replicaCount }}
   strategy:
     type: RollingUpdate
     rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
   selector:
     matchLabels:
-      app: {{ .Values.name }}
+      app: {{ .Values.innlandetfylke.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.name }}
+        app: {{ .Values.innlandetfylke.name }}
     spec:
-      restartPolicy: {{ .Values.restartPolicy }}
+      restartPolicy: {{ .Values.innlandetfylke.restartPolicy }}
       volumes:
         - name: tempdir
           emptyDir:
             sizeLimit: 1G
       containers:
-        - name: {{ .Values.name }}
-          image: "{{ .Values.image.repository }}"
+        - name: {{ .Values.innlandetfylke.name }}
+          image: "{{ .Values.innlandetfylke.image.repository }}"
           resources:
             limits:
-              memory: {{ .Values.resources.limits.memory }}
-              cpu:  {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.innlandetfylke.resources.limits.memory }}
+              cpu:  {{ .Values.innlandetfylke.resources.limits.cpu }}
             requests:
-              memory: {{ .Values.resources.requests.memory }}
-              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.innlandetfylke.resources.requests.memory }}
+              cpu: {{ .Values.innlandetfylke.resources.requests.cpu }}
           ports:
-            - {containerPort: 8080}
+            - {containerPort: 8091}
           volumeMounts:
             - name: tempdir
               mountPath: /temp
           envFrom:
             - secretRef:
-                name: {{ .Values.secretRef.name }}
+                name: {{ .Values.innlandetfylke.secretRef.name }}
           env:
-            - {name: TZ, value: Europe/Oslo}
-            - name: JAVA_TOOL_OPTIONS
-              value: >-
-                -Xmx1G -verbose:gc
-                -XX:+ExitOnOutOfMemoryError
-                -Dfile.encoding=UTF-8
-            - {name: springfox.title, value: "Public 360 Online Adapter for Agder fylkeskommune"}
-            - {name: security.basic.enabled, value: "false"}
-            - {name: fint.adapter.organizations, value: agderfk.no}
-            - {name: fint.adapter.reject-unknown-events, value: 'true'}
-            - {name: fint.adapter.endpoints.providers.kodeverk, value: https://beta.felleskomponent.no/arkiv/kodeverk/provider}
-            - {name: fint.adapter.endpoints.providers.noark, value: https://beta.felleskomponent.no/arkiv/noark/provider}
-            - {name: fint.adapter.endpoints.providers.kulturminne, value: https://beta.felleskomponent.no/arkiv/kulturminnevern/provider}
-            - {name: fint.case.defaults.tilskuddfartoy.title.cases, value: 'Post 74 - ${kallesignal} - ${fartoyNavn} -  ${soknadsnummer.identifikatorverdi}'}
-            - {name: fint.case.defaults.tilskuddfredabygningprivateie.title.cases, value: 'Post 71 - ${kulturminneId} - ${bygningsnavn} - gnr ${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer} - ${soknadsnummer.identifikatorverdi}'}
-            {{- range .Values.env }}
-            - {name: {{ .name}}, value: {{ .value }}}
+            {{- range .Values.innlandetfylke.env }}
+            - {name: {{ .name}}, value: {{ .value | toJson}}}
             {{- end }} 
             
