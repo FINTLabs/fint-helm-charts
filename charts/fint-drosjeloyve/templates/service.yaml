@@ -1,15 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "fint-drosjeloyve.fullname" . }}
-  labels:
-    {{- include "fint-drosjeloyve.labels" . | nindent 4 }}
+  name: {{ .Values.name}} #drosjeloyve-service
+  annotations: {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
-    {{- include "fint-drosjeloyve.selectorLabels" . | nindent 4 }}
+    app: {{ .Values.name}} #drosjeloyve-service
+  type: LoadBalancer
+  ports:
+    - {name: '8080', port: 8080}

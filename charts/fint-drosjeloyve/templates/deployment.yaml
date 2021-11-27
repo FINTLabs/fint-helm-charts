@@ -1,61 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fint-drosjeloyve.fullname" . }}
-  labels:
-    {{- include "fint-drosjeloyve.labels" . | nindent 4 }}
+  name: {{ .Values.name}} #drosjeloyve-service
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "fint-drosjeloyve.selectorLabels" . | nindent 6 }}
+      app: {{ .Values.name}} #drosjeloyve-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "fint-drosjeloyve.selectorLabels" . | nindent 8 }}
+        app: {{ .Values.name}}  #drosjeloyve-service
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "fint-drosjeloyve.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ .Values.name}} #drosjeloyve-service
+          image: {{ .Values.drosjeloyve.deployment.image.repository}}:{{ .Values.drosjeloyve.deployment.image.tag}} #fintlabsacr.azurecr.io/drosjeloyve:build.27
+          resources:
+            limits:
+              memory: "1000Mi"
+              cpu: "1000m"
+            requests:
+              memory: "500Mi"
+              cpu: "500m"
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            - containerPort: 8080
           readinessProbe:
             httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+          envFrom:
+            - secretRef:
+                name: {{ .Values.name}} #drosjeloyve-service
+          env:
+          {{- range .Values.drosjeloyve.deployment.environments }}
+            - {name: {{ .name}}, value: {{ .value }}}
+          {{- end }} 
+            
