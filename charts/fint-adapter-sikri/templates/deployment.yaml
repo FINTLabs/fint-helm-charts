@@ -1,45 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.innlandetfylke.name }}
+  name: {{ .Values.name }}
 spec:
-  replicas: {{ .Values.innlandetfylke.replicaCount }}
-  strategy:
-    type: RollingUpdate
-    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.innlandetfylke.name }}
+      app: {{ .Values.name }}
   template:
     metadata:
-      labels:
-        app: {{ .Values.innlandetfylke.name }}
     spec:
-      restartPolicy: {{ .Values.innlandetfylke.restartPolicy }}
       volumes:
         - name: tempdir
           emptyDir:
             sizeLimit: 1G
       containers:
-        - name: {{ .Values.innlandetfylke.name }}
-          image: "{{ .Values.innlandetfylke.image.repository }}"
-          resources:
-            limits:
-              memory: {{ .Values.innlandetfylke.resources.limits.memory }}
-              cpu:  {{ .Values.innlandetfylke.resources.limits.cpu }}
-            requests:
-              memory: {{ .Values.innlandetfylke.resources.requests.memory }}
-              cpu: {{ .Values.innlandetfylke.resources.requests.cpu }}
+        - name: {{ .Values.name }}
+          image: "{{ .Values.image.repository }}"
+          #imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - {containerPort: 8091}
-          volumeMounts:
-            - name: tempdir
-              mountPath: /temp
-          envFrom:
-            - secretRef:
-                name: {{ .Values.innlandetfylke.secretRef.name }}
+            - name: http
+              containerPort: 8091
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           env:
-            {{- range .Values.innlandetfylke.env }}
+            {{- range .Values.env }}
             - {name: {{ .name}}, value: {{ .value | toJson}}}
-            {{- end }} 
-            
+            {{- end }}
