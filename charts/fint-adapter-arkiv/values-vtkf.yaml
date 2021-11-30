@@ -1,0 +1,140 @@
+# Default values for fint-adapter-arkiv.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+progressDeadlineSeconds: 600
+revisionHistoryLimit: 10
+
+image:
+  repository: fintlabsacr.azurecr.io/p360-rpc-arkiv-adapter
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: build.47
+
+imagePullSecrets: []
+nameOverride: adapter-p360-arkiv-agderfk
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+secretRef: p360-rpc-arkiv-agderfk
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: "2"
+    memory: 2Gi
+  requests:
+    cpu: 250m
+    memory: 1Gi
+
+terminationMessagePath: /dev/termination-log
+terminationMessagePolicy: File
+terminationGracePeriodSeconds: 30
+
+dnsPolicy: ClusterFirst
+restartPolicy: Always
+schedulerName: default-scheduler
+
+volumeMounts:
+  - mountPath: /temp
+    name: tempdir
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+env:
+  - {name: TZ, value: Europe/Oslo}
+  - {name: JAVA_TOOL_OPTIONS, value: '-Xmx1G -verbose:gc -XX:+ExitOnOutOfMemoryError -Dfile.encoding=UTF-8'}
+  - {name: springfox.title, value: P360 RPC Adapter for Agder}
+  - {name: security.basic.enabled, value: "false"}
+  - {name: fint.adapter.reject-unknown-events, value: "true"}
+  - {name: fint.adapter.endpoints.providers.kodeverk, value: https://api.felleskomponent.no/arkiv/kodeverk/provider}
+  - {name: fint.adapter.endpoints.providers.noark, value: https://api.felleskomponent.no/arkiv/noark/provider}
+  - {name: fint.adapter.endpoints.providers.samferdsel, value: https://api.felleskomponent.no/arkiv/samferdsel/provider}
+  - {name: fint.adapter.endpoints.providers.kulturminne, value: https://api.felleskomponent.no/arkiv/kulturminnevern/provider}
+  - {name: fint.case.defaults.soknaddrosjeloyve.journalenhet, value: "506"}
+  - {name: fint.case.defaults.soknaddrosjeloyve.saksmappeType, value: Sak}
+  - {name: fint.case.defaults.soknaddrosjeloyve.tilgangsgruppe, value: Alle}
+  - {name: fint.case.defaults.soknaddrosjeloyve.journalpost.tilgangsgruppe, value: Drosjeløyver}
+  - {name: fint.case.defaults.soknaddrosjeloyve.dokumentstatus, value: F}
+  - {name: fint.case.defaults.soknaddrosjeloyve.journalstatus, value: J}
+  - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Drosjeløyve - ${organisasjonsnavn} - ${organisasjonsnummer}'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: "200227"}
+  - {name: fint.case.defaults.soknaddrosjeloyve.arkivdel, value: "200009"}
+  - {name: fint.case.defaults.soknaddrosjeloyve.saksstatus, value: B}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.ordning, value: ORGNR}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.verdi, value: '${organisasjonsnummer}'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.tittel, value: '${organisasjonsnavn}'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.ordning, value: FAGKLASSE PRINSIPP}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.verdi, value: N12}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.3.ordning, value: TILLEGGSKODE PRINSIPP}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.3.verdi, value: '&18'}
+  - {name: fint.file-cache.directory, value: /temp}
+  - {name: fint.case.defaults.tilskuddfartoy.title.cases, value: 'Post 74 - ${kallesignal} - ${fartoyNavn} -  ${soknadsnummer.identifikatorverdi}'}
+  - {name: fint.case.defaults.tilskuddfartoy.administrativEnhet, value: '200210'}
+  - {name: fint.case.defaults.tilskuddfartoy.arkivdel, value: '60001'}
+  - {name: fint.case.defaults.tilskuddfartoy.saksstatus, value: 'B'}
+  - {name: fint.case.defaults.tilskuddfartoy.journalstatus, value: 'J'}
+  - {name: fint.case.defaults.tilskuddfartoy.dokumentstatus, value: 'F'}
+  - {name: fint.case.defaults.tilskuddfartoy.dokumentType, value: 'B'}
+  - {name: fint.case.defaults.tilskuddfartoy.tilknyttetRegistreringSom, value: 'H'}
+  - {name: fint.case.defaults.tilskuddfartoy.saksmappeType, value: 'Sak'}
+  - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.ordning, value: 'recno:60006'} # FELLESKLASSE PRINSIPP
+  - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.verdi, value: 'recno:300213'}  # 243
+  - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.2.ordning, value: 'recno:60008'} # TILLEGGSKODE PRINSIPP
+  - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.2.verdi, value: 'recno:340354'}  # C52
+  - {name: fint.case.defaults.tilskuddfartoy.prosjekt, value: 'recno:200173'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.title.cases, value: 'Post 71 - ${kulturminneId} - ${bygningsnavn} - gnr ${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer} - ${soknadsnummer.identifikatorverdi}'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.administrativEnhet, value: '200210'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.arkivdel, value: '60001'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksstatus, value: 'B'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.journalstatus, value: 'J'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.dokumentstatus, value: 'F'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.dokumentType, value: 'B'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.tilknyttetRegistreringSom, value: 'H'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksmappeType, value: 'Sak'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.ordning, value: 'recno:60006'} # FELLESKLASSE PRINSIPP
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.verdi, value: 'recno:300213'}  # 243
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.ordning, value: 'recno:60008'} # TILLEGGSKODE PRINSIPP
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.2.verdi, value: 'recno:340354'}  # C52
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.prosjekt, value: 'recno:200173'}
+  - {name: fint.case.coding.dokumentType.B, value: '1'}
+  - {name: fint.case.coding.journalposttype.I, value: '110'}
+  - {name: fint.case.coding.journalposttype.U, value: '111'}
+  - {name: fint.case.coding.journalposttype.N, value: '113'}
+  - {name: fint.case.coding.journalposttype.X, value: '60005'}
+  - {name: fint.case.coding.journalposttype.S, value: '1'}
+  - {name: fint.case.coding.korrespondanseparttype.EA, value: '5'}
+  - {name: fint.case.coding.korrespondanseparttype.EM, value: '6'}
+  - {name: fint.case.coding.filformat.RA-PDF, value: 'PDF'}
+  - {name: fint.case.coding.filformat.RA-TEKST, value: 'TXT'}
+  - {name: fint.case.coding.filformat.RA-JPEG, value: 'JPG'}
+  - {name: fint.case.coding.filformat.RA-TIFF6, value: 'TIF'}
+  - {name: logging.level.no.fint.p360.data.p360, value: info}
