@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.name}} #drosjeloyve-service
+  name: {{ .Values.name}} 
   annotations: {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}
 spec:
   selector:
-    app: {{ .Values.name}} #drosjeloyve-service
+    app: {{ .Values.name}} 
   type: LoadBalancer
   ports:
     - {name: '8080', port: 8080}

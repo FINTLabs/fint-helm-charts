@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.name}} #drosjeloyve-service
+  name: {{ .Values.name}}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.name}} #drosjeloyve-service
+      app: {{ .Values.name}} 
   strategy:
     type: RollingUpdate
     rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
   template:
     metadata:
       labels:
-        app: {{ .Values.name}}  #drosjeloyve-service
+        app: {{ .Values.name}} 
     spec:
       containers:
-        - name: {{ .Values.name}} #drosjeloyve-service
+        - name: {{ .Values.name}}
           image: {{ .Values.drosjeloyve.deployment.image.repository}}:{{ .Values.drosjeloyve.deployment.image.tag}} #fintlabsacr.azurecr.io/drosjeloyve:build.27
           resources:
             limits:
@@ -40,7 +40,7 @@ spec:
             timeoutSeconds: 5
           envFrom:
             - secretRef:
-                name: {{ .Values.name}} #drosjeloyve-service
+                name: {{ .Values.name}}
           env:
           {{- range .Values.drosjeloyve.deployment.environments }}
             - {name: {{ .name}}, value: {{ .value }}}
