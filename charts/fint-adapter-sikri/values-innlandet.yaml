@@ -10,6 +10,8 @@ onePasswordVault:
   name: 
   create: false
 
+environment:
+
 strategy:
   rollingUpdate:
     maxSurge: 1

@@ -10,7 +10,7 @@ onePasswordVault:
   name: sikri-arkiv-vlfk
   create: true
 
-  environment: 
+environment: 
 
 strategy:
   rollingUpdate:
