@@ -4,7 +4,11 @@
 
 replicaCount: 1
 
-name: adapter-sikri-arkiv-mrfylke-no
+nameOverride: adapter-sikri-arkiv-mrfylke-no
+
+onePasswordVault: 
+  name: 
+  create: false
 
 strategy:
   rollingUpdate:

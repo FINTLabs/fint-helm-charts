@@ -4,7 +4,11 @@
 
 replicaCount: 1
 
-name: adapter-sikri-arkiv-innlandetfylke
+nameOverride: adapter-sikri-arkiv-innlandetfylke
+
+onePasswordVault: 
+  name: 
+  create: false
 
 strategy:
   rollingUpdate:

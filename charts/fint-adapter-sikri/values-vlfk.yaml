@@ -4,7 +4,13 @@
 
 replicaCount: 1
 
-name: adapter-sikri-arkiv-vlfk
+nameOverride: adapter-sikri-arkiv-vlfk
+
+onePasswordVault: 
+  name: sikri-arkiv-vlfk
+  create: true
+
+  environment: 
 
 strategy:
   rollingUpdate:

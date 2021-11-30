@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.name }}
+  name: {{ .Values.nameOverride }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.name }}
+      app: {{ .Values.nameOverride }}
   template:
     metadata:
     spec:
@@ -15,7 +15,7 @@ spec:
           emptyDir:
             sizeLimit: 1G
       containers:
-        - name: {{ .Values.name }}
+        - name: {{ .Values.nameOverride }}
           image: "{{ .Values.image.repository }}"
           #imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
