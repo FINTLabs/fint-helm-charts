@@ -3,12 +3,12 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-onePasswordVault: aks-api-vault
+onePasswordItem: aks-api-vault
 
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: kulturtanken
+nameOverride: kulturtanken
+#fullnameOverride: kulturtanken
 
 service:
   type: LoadBalancer
@@ -29,8 +29,8 @@ deployment:
        memory: '2Gi'
   
   ports:
-    - containerPort: 8080
-    
+    containerPort: 8080
+
   readinessProbe:
     initialDelaySeconds: 60
     timeoutSeconds: 5
