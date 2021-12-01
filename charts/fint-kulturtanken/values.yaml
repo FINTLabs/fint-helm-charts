@@ -5,10 +5,7 @@
 replicaCount: 1
 onePasswordItem: aks-api-vault
 
-
-imagePullSecrets: []
 nameOverride: kulturtanken
-#fullnameOverride: kulturtanken
 
 service:
   type: LoadBalancer
