@@ -1,4 +1,4 @@
-{{- if .Values.onePasswordVault.create -}}
+{{- if .Values.onePasswordItem.create -}}
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
