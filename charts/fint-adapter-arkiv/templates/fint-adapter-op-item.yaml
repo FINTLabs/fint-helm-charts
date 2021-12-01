@@ -1,0 +1,9 @@
+{{- if .Values.onePasswordVault.create -}}
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: {{ .Values.nameOverride }}
+  labels:
+spec:
+  itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Values.onePasswordVault }}"
+{{- end }}

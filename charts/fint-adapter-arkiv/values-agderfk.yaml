@@ -6,6 +6,12 @@ replicaCount: 1
 progressDeadlineSeconds: 600
 revisionHistoryLimit: 10
 
+onePasswordVault: 
+  name: 
+  create: false
+
+environment:
+
 image:
   repository: fintlabsacr.azurecr.io/p360-rpc-arkiv-adapter
   pullPolicy: IfNotPresent
