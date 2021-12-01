@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.nameOverride }}
+  name: {{ include "fint-adapter-sikri.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.nameOverride }}
+      app: {{ include "fint-adapter-sikri.name" . }}
   template:
     metadata:
     spec:
@@ -15,12 +15,12 @@ spec:
           emptyDir:
             sizeLimit: 1G
       containers:
-        - name: {{ .Values.nameOverride }}
-          image: "{{ .Values.image.repository }}"
+        - name: {{ include "fint-adapter-sikri.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           #imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8091
+              containerPort: {{ .Values.containerPort }}
               protocol: TCP
           livenessProbe:
             httpGet:

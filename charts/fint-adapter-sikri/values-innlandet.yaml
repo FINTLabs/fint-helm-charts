@@ -6,7 +6,7 @@ replicaCount: 1
 
 nameOverride: adapter-sikri-arkiv-innlandetfylke
 
-onePasswordVault: 
+onePasswordItem: 
   name: 
   create: false
 
@@ -26,10 +26,10 @@ volumeMounts:
     mountPath: /temp
 
 image:
-  repository: fintlabsacr.azurecr.io/sikri-arkiv-adapter:PR-38.37
+  repository: fintlabsacr.azurecr.io/sikri-arkiv-adapter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 2.3.0-alpha-2
+  tag: PR-38.37
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -40,9 +40,8 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-service:
-  type: ClusterIP
-  port: 80
+
+containerPort: 8091
 
 secretRef:
   name: innlandetfylke-elements-adapter
