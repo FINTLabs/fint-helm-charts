@@ -3,7 +3,7 @@ kind: Service
 metadata:
   annotations: {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}
   labels: 
-    fint.stack: {{ .Values.name}}
+    fint.stack: {{ include "fint-core-stack.name" . }}
     fint.role: consumer
     {{- include "fint-environment.labels" . | nindent 4 }}
 
