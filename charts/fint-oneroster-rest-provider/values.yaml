@@ -1,0 +1,148 @@
+replicaCount: 1
+nameOverride: oneroster-rest-provider-agder
+onePasswordItem: 
+  name: 
+  create: false
+
+service:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+  
+deployment:
+  containers:
+    repo: fintlabsacr.azurecr.io
+    image: oneroster-rest-provider
+    tag: 2.0.0
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      ports:
+        containerPort: 8080
+      readinessProbe:
+        httpGet:
+          path: /agder/ims/oneroster/v1p1/actuator/health/readiness
+          port: 8080
+        initialDelaySeconds: 60
+        timeoutSeconds: 5
+      livenessProbe:
+        httpGet:
+          path: /agder/ims/oneroster/v1p1/actuator/health/liveness
+          port: 8080
+        initialDelaySeconds: 120
+        timeoutSeconds: 5
+      env:
+        - name: TZ
+          value: Europe/Oslo
+        - name: JAVA_TOOL_OPTIONS
+          value: -XX:+ExitOnOutOfMemoryError -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=70
+        - name: scheduling.initial-delay
+          value: '10000'
+        - name: scheduling.fixed-delay
+          value: '3600000'
+        - name: scheduling.cron
+          value: '0 0 0 * * *'
+        - name: server.servlet.context-path 
+          value: /agder/ims/oneroster/v1p1
+        - name: oneroster.access-control
+          value: 'true'
+        - name: oneroster.clients.itslearning.name
+          value: oneroster_client_itslearning
+        - name: oneroster.clients.itslearning.id
+          value: 1df4c371-f4c4-48b0-a6b4-3f9183472720
+        - name: oneroster.clients.agder.name
+          value: oneroster_client_agder
+        - name: oneroster.clients.agder.id
+          value: ea612a35-adf5-4d0a-ac80-21717c990289
+        - name: oneroster.user-factory
+          value: nin
+        - name: oneroster.class-factory
+          value: default
+        - name: oneroster.contact-teacher-groups
+          value: 'true'
+        - name: oneroster.parents
+          value: 'false'              
+        - name: oneroster.org.sourced-id
+          value: '921707134'
+        - name: oneroster.org.name
+          value: Agder fylkeskommune
+        - name: oneroster.org.identifier
+          value: '921707134'
+        - name: fint.component.education.registration.1.id
+          value: agder
+        - name: fint.component.education.registration.1.username
+          valueFrom:
+            secretKeyRef:
+              name: oneroster-agder
+              key: username
+        - name: fint.component.education.registration.1.password
+          valueFrom:
+            secretKeyRef:
+              name: oneroster-agder
+              key: password
+        - name: fint.component.education.endpoint.school
+          value: https://api.felleskomponent.no/utdanning/utdanningsprogram/skole
+        - name: fint.component.education.endpoint.person
+          value: https://api.felleskomponent.no/utdanning/elev/person
+        - name: fint.component.education.endpoint.student
+          value: https://api.felleskomponent.no/utdanning/elev/elev
+        - name: fint.component.education.endpoint.student-relation
+          value: https://api.felleskomponent.no/utdanning/elev/elevforhold
+        - name: fint.component.education.endpoint.teacher
+          value: https://api.felleskomponent.no/utdanning/elev/skoleressurs
+        - name: fint.component.education.endpoint.teaching-relation
+          value: https://api.felleskomponent.no/utdanning/elev/undervisningsforhold
+        - name: fint.component.education.endpoint.basis-group
+          value: https://api.felleskomponent.no/utdanning/elev/basisgruppe
+        - name: fint.component.education.endpoint.level
+          value: https://api.felleskomponent.no/utdanning/utdanningsprogram/arstrinn
+        - name: fint.component.education.endpoint.teaching-group
+          value: https://api.felleskomponent.no/utdanning/timeplan/undervisningsgruppe
+        - name: fint.component.education.endpoint.subject
+          value: https://api.felleskomponent.no/utdanning/timeplan/fag
+        - name: fint.component.education.endpoint.contact-teacher-group
+          value: https://api.felleskomponent.no/utdanning/elev/kontaktlarergruppe
+        - name: fint.component.education.endpoint.term  
+          value: https://api.felleskomponent.no/utdanning/kodeverk/termin
+        - name: fint.component.education.endpoint.school-year
+          value: https://api.felleskomponent.no/utdanning/kodeverk/skolear
+        - name: fint.component.administration.registration.1.id
+          value: agder
+        - name: fint.component.administration.registration.1.username
+          valueFrom:
+            secretKeyRef:
+              name: oneroster-agder
+              key: username
+        - name: fint.component.administration.registration.1.password
+          valueFrom:
+            secretKeyRef:
+              name: oneroster-agder
+              key: password
+        - name: fint.component.administration.endpoint.person
+          value: https://api.felleskomponent.no/administrasjon/personal/person
+        - name: fint.component.administration.endpoint.personnel
+          value: https://api.felleskomponent.no/administrasjon/personal/personalressurs
+        - name: spring.security.oauth2.client.registration.agder.client-id
+          valueFrom:
+            secretKeyRef:
+              key: client-id
+              name: oneroster-agder
+        - name: spring.security.oauth2.client.registration.agder.client-secret
+          valueFrom:
+            secretKeyRef:
+              key: client-secret
+              name: oneroster-agder
+        - name: spring.security.oauth2.client.registration.agder.authorization-grant-type
+          value: password
+        - name: spring.security.oauth2.client.registration.agder.scope
+          value: fint-client
+        - name: spring.security.oauth2.client.registration.agder.provider
+          value: fint
+        - name: spring.security.oauth2.client.provider.fint.token-uri
+          value: https://idp.felleskomponent.no/nidp/oauth/nam/token
+        - name: spring.security.oauth2.resourceserver.jwt.jwk-set-uri
+          value: https://idp.felleskomponent.no/nidp/oauth/nam/keys
