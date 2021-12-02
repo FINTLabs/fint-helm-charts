@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.nameOverride }}
+  name: {{ include "fint-adapter-arkiv.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.nameOverride }}
+      app: {{ include "fint-adapter-arkiv.name" . }}
   template:
     metadata:
       labels: 
-        app: {{ .Values.nameOverride }}
+        app: {{ include "fint-adapter-arkiv.name" . }}
     spec:
       volumes:
         - name: tempdir
@@ -21,7 +21,7 @@ spec:
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}
       containers:
-        - name: {{ .Values.nameOverride }}
+        - name: {{ include "fint-adapter-arkiv.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
