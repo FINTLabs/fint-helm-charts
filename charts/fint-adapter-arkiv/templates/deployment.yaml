@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fint-adapter-arkiv.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "fint-adapter-arkiv.name" . }}
+  template:
+    metadata:
+      labels: 
+        app: {{ include "fint-adapter-arkiv.name" . }}
+    spec:
+      volumes:
+        - name: tempdir
+          emptyDir:
+            sizeLimit: 1G
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      restartPolicy: {{ .Values.restartPolicy }}
+      schedulerName: {{ .Values.schedulerName }}
+      containers:
+        - name: {{ include "fint-adapter-arkiv.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+          - secretRef:
+              name: {{ .Values.secretRef }}
+          ports:
+            - name: http
+              containerPort: 8091
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          terminationMessagePath: {{ .Values.terminationMessagePath }}
+          terminationMessagePolicy: {{ .Values.terminationMessagePolicy }}
+          volumeMounts:
+          - mountPath: /temp
+            name: tempdir
+          env:
+            {{- range .Values.env }}
+            - {name: {{ .name}}, value: {{ .value | toJson}}}
+            {{- end }}

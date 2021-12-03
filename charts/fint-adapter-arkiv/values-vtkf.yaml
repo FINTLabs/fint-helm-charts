@@ -1,0 +1,84 @@
+# Default values for fint-adapter-arkiv.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+progressDeadlineSeconds: 600
+revisionHistoryLimit: 10
+
+onePasswordItem: 
+  name: 
+  create: false
+
+environment:
+
+image:
+  repository: fintlabsacr.azurecr.io/p360-rpc-arkiv-adapter
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: build.29
+
+imagePullSecrets: []
+nameOverride: adapter-p360-arkiv-vtfk
+fullnameOverride: ""
+
+secretRef: p360-arkiv-vtfk
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: "2"
+    memory: 2Gi
+  requests:
+    cpu: 250m
+    memory: 1Gi
+
+terminationMessagePath: 
+terminationMessagePolicy: 
+terminationGracePeriodSeconds: 
+
+dnsPolicy: 
+restartPolicy: 
+schedulerName: 
+
+volumeMounts:
+  - mountPath: /temp
+    name: tempdir
+
+env:
+  - {name: TZ, value: Europe/Oslo}
+  - name: JAVA_TOOL_OPTIONS
+    value: >-
+      -Xmx1G -verbose:gc
+      -XX:+ExitOnOutOfMemoryError
+      -Dfile.encoding=UTF-8
+  - {name: fint.adapter.endpoints.providers.kodeverk, value: https://api.felleskomponent.no/arkiv/kodeverk/provider}
+  - {name: fint.adapter.endpoints.providers.noark, value: https://api.felleskomponent.no/arkiv/noark/provider}
+  - {name: fint.adapter.endpoints.providers.samferdsel, value: https://api.felleskomponent.no/arkiv/samferdsel/provider}
+  - {name: fint.adapter.reject-unknown-events, value: 'false'}
+  - {name: fint.case.coding.journalposttype.I, value: '110'}
+  - {name: fint.case.coding.korrespondanseparttype.EA, value: '5'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: '246348'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.arkivdel, value: 'Løyver'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.dokumentstatus, value: 'F'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.journalenhet, value: 'Sentralarkiv'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.journalstatus, value: 'J'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.ordning, value: 'ORG'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.tittel, value: '${organisasjonsnavn}'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.verdi, value: '${organisasjonsnummer}'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.ordning, value: 'FAGKLASSE PRINSIPP'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.verdi, value: 'N12'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.3.ordning, value: 'TILLEGGSKODE PRINSIPP'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.3.verdi, value: '380029'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.noekkelord, value: ''}
+  - {name: fint.case.defaults.soknaddrosjeloyve.saksmappeType, value: 'Sak'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.saksstatus, value: 'B'}
+  - {name: fint.case.defaults.drosjeloyve.tilgangsgruppe.sak, value: 'Alle'} #TODO
+  - {name: fint.case.defaults.drosjeloyve.tilgangsgruppe.journalpost, value: 'Løyver'} #TODO
+  - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Drosjeløyve - ${organisasjonsnavn} - ${organisasjonsnummer}'}
+  - {name: fint.file-cache.directory, value: '/temp'}
+  - {name: security.basic.enabled, value: 'false'}
+  - {name: springfox.title, value: 'P360 RPC Adapter for Vestfold og Telemark'}

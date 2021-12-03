@@ -1,0 +1,9 @@
+{{- if .Values.onePasswordItem.create -}}
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: {{ include "fint-adapter-arkiv.name" . }}
+  labels:
+spec:
+  itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Values.onePasswordItem }}"
+{{- end }}
