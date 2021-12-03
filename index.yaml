@@ -33,4 +33,15 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-events-azure-eventhub-secrets-1.0.0/fint-events-azure-eventhub-secrets-1.0.0.tgz
     version: 1.0.0
+  kulturtanken:
+  - apiVersion: v2
+    appVersion: 3.9.0
+    created: "2021-12-03T11:15:26.383088866Z"
+    description: A Helm chart for kulturtanken
+    digest: b04a9cb13a78345f98d7c75f0ba73616d6d7bc079888d78fab3d2fd60bdf0671
+    name: kulturtanken
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/kulturtanken-1.0.0/kulturtanken-1.0.0.tgz
+    version: 1.0.0
 generated: "2021-11-24T21:42:37.746527728Z"
