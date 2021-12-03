@@ -1,0 +1,85 @@
+# Default values for fint-graphql.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 7
+minReadySeconds: 30
+revisionHistoryLimit: 0
+
+image:
+  repository: fintlabsacr.azurecr.io/graphql
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: PR-20.4
+
+imagePullSecrets: []
+nameOverride: graphql
+fullnameOverride: ""
+
+annotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: "graphql/actuator/prometheus"
+
+labels:
+  io.kompose.service: graphql
+
+initialDelaySeconds: 20
+timeoutSeconds: 5
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 1
+
+selector:
+  io.kompose.service: graphql
+
+configMapRef: fint-environment
+
+service:
+  type: LoadBalancer
+  port: 8080
+  annotations:
+    kompose.version: 1.16.0 (HEAD)
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  selector:
+    io.kompose.service: graphql
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    memory: "5Gi"
+    cpu: "2"  
+
+env:
+  - name: server.servlet.context-path
+    value: "/graphql"
+  - name: graphiql.endpoint.graphql
+    value: "/graphql/graphql"
+  - name: fint.endpoint.root
+    value: "https://api.felleskomponent.no"
+  - name: spring.main.allow-bean-definition-overriding
+    value: "true"
+  - name: spring.codec.max-in-memory-size
+    value: "50000000"
+  - name: fint.webclient.connection-provider.maxConnections
+    value: "100"
+  - name: fint.webclient.connection-provider.maxLifeTime
+    value: "PT15M"
+  - name: fint.webclient.connection-provider.maxIdleTime
+    value: "PT4M"
+  - name: management.endpoint.prometheus.enabled
+    value: "true"
+  - name: management.endpoint.shutdown.enabled
+    value: "true"
+  - name: management.endpoint.health.show-details
+    value: "always"
+  - name: management.endpoints.web.exposure.include
+    value: "*"
+  - name: management.info.git.mode
+    value: "full"
