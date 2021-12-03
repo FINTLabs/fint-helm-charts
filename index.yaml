@@ -66,6 +66,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-events-azure-eventhub-secrets-1.0.0/fint-events-azure-eventhub-secrets-1.0.0.tgz
     version: 1.0.0
+  fint-graphql:
+  - apiVersion: v2
+    appVersion: 3.8.11
+    created: "2021-12-03T13:00:08.311866757Z"
+    description: A Helm chart for FINT graphql
+    digest: e0d1d66f55285bda184233b6d2c216fe73adabbd1f6121085edbf064e7f6a1f8
+    name: fint-graphql
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-graphql-0.1.0/fint-graphql-0.1.0.tgz
+    version: 0.1.0
   fint-oneroster-rest-provider:
   - apiVersion: v2
     appVersion: 3.8.11
