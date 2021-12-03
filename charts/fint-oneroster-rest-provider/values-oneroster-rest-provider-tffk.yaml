@@ -8,6 +8,8 @@ onePasswordItem:
 service:
   type: LoadBalancer
   port: 8080
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
   
 deployment:
   containers:
