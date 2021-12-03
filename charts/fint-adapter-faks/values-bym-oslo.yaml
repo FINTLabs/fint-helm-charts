@@ -1,0 +1,64 @@
+# Default values for fint-adapter-faks.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: fintlabsacr.azurecr.io/fint-faks-adapter
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: 3.7.1
+
+imagePullSecrets: []
+nameOverride: adapter-faks-bym-oslo
+fullnameOverride: ""
+
+volumes:
+  - name: certificate
+    secret: 
+      secretName: faks-adapter-bym-oslo
+
+volumeMounts:
+  - name: certificate
+    mountPath: /secrets
+
+containerPort: 8091
+
+secretRef: faks-adapter-bym-oslo
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  limits:
+    memory: "2Gi"
+    cpu: "2"
+  requests:
+    memory: "1Gi"
+    cpu: "250m"
+
+env:
+  - {name: TZ, value: Europe/Oslo}
+  - name: JAVA_TOOL_OPTIONS
+    value: >-
+      -Xmx1G -verbose:gc
+      -XX:+ExitOnOutOfMemoryError
+      -Dfile.encoding=UTF-8
+      -Dcom.sun.xml.ws.transport.http.client.HttpTransportPipe.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump=true
+      -Dcom.sun.xml.ws.transport.http.HttpAdapter.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.HttpAdapter.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold=10000
+  - {name: springfox.title, value: "SvarUt (Faks) Adapter for Oslo kommune bymiljøetaten"}
+  - {name: security.basic.enabled, value: "false"}
+  - {name: fint.adapter.organizations, value: bym.oslo.kommune.no}
+  - {name: fint.adapter.reject-unknown-events, value: 'false'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Drosjeløyvesøknad: ${organisasjonsnavn}'}
+  - {name: fint.internal-files.type, value: 'BLOB'}
+  - {name: spring.data.mongodb.database, value: 'svarut-faks'}
+  - {name: fint.adapter.endpoints.providers.kodeverk, value: https://api.felleskomponent.no/arkiv/kodeverk/provider}
+  - {name: fint.adapter.endpoints.providers.noark, value: https://api.felleskomponent.no/arkiv/noark/provider}
+  - {name: fint.adapter.endpoints.providers.samferdsel, value: https://api.felleskomponent.no/arkiv/samferdsel/provider}
