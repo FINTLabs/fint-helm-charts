@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  fint-adapter-faks:
+  - apiVersion: v2
+    appVersion: 3.9.0
+    created: "2021-12-03T11:17:58.54732465Z"
+    description: A Helm chart for faks adapter
+    digest: 2dd56b5ed64da4b444866c522b63cc1e4c3831c269923fb2f5323b5fd9e566f3
+    name: fint-adapter-faks
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-adapter-faks-0.1.0/fint-adapter-faks-0.1.0.tgz
+    version: 0.1.0
   fint-core-stack:
   - apiVersion: v2
     appVersion: 3.9.0
