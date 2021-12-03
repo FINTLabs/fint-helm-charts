@@ -22,6 +22,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-adapter-faks-0.1.0/fint-adapter-faks-0.1.0.tgz
     version: 0.1.0
+  fint-azure-service:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2021-12-03T12:56:44.663599664Z"
+    description: A Helm chart for Vigo Azure AD Service
+    digest: ac1e15f7e8e3406e33ba9ac0def938b18848a8f3e13a0c9bb284c495922ebd90
+    name: fint-azure-service
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-azure-service-0.1.0/fint-azure-service-0.1.0.tgz
+    version: 0.1.0
   fint-core-stack:
   - apiVersion: v2
     appVersion: 3.9.0
