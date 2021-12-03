@@ -22,6 +22,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-adapter-faks-0.1.0/fint-adapter-faks-0.1.0.tgz
     version: 0.1.0
+  fint-admin-portal:
+  - apiVersion: v2
+    appVersion: 3.4.0
+    created: "2021-12-03T13:36:45.333009176Z"
+    description: A Helm chart for admin portal
+    digest: 0cb0b103ab37edd5592f9decd0b60518c2ef4bf71dc4d45986a2092ba438dcdc
+    name: fint-admin-portal
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-admin-portal-0.1.0/fint-admin-portal-0.1.0.tgz
+    version: 0.1.0
   fint-azure-service:
   - apiVersion: v2
     appVersion: 1.0.0
