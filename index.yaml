@@ -44,6 +44,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-events-azure-eventhub-secrets-1.0.0/fint-events-azure-eventhub-secrets-1.0.0.tgz
     version: 1.0.0
+  fint-oneroster-rest-provider:
+  - apiVersion: v2
+    appVersion: 3.8.11
+    created: "2021-12-03T11:24:10.106651157Z"
+    description: A Helm chart for oneroster-rest-provider
+    digest: bfb851c3fb1a7b56626189037aad9d13515d797670eb867f54f4cc21073f262e
+    name: fint-oneroster-rest-provider
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-oneroster-rest-provider-1.0.0/fint-oneroster-rest-provider-1.0.0.tgz
+    version: 1.0.0
   kulturtanken:
   - apiVersion: v2
     appVersion: 3.9.0
