@@ -1,6 +1,6 @@
 apiVersion: v2
 name: fint-drosjeloyve
-description: A Helm chart for fint-drosjeloyve
+description: A Helm chart for drosjeloyve
 
 type: application
 

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.nameOverride}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.nameOverride}}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.nameOverride}}
+    spec:
+      volumes:
+        - name: {{ .Values.deployment.volumes.name}}
+          secret:
+            secretName: {{ .Values.deployment.volumes.secretName}}
+      containers:
+        - name: {{ .Values.nameOverride}}
+          image: {{ .Values.deployment.containers.repo}}/{{ .Values.deployment.containers.image}}:{{ .Values.deployment.containers.tag}}
+          volumeMounts:
+            - name: {{ .Values.deployment.containers.volumeMounts.name}}
+              mountPath: {{ .Values.deployment.containers.volumeMounts.mountPath}}
+          resources:
+            limits:
+              memory: {{ .Values.deployment.containers.resources.limits.memory}}
+              cpu: {{ .Values.deployment.containers.resources.limits.cpu}}
+            requests:
+              memory: {{ .Values.deployment.containers.resources.requests.memory}}
+              cpu: {{ .Values.deployment.containers.resources.requests.cpu}}
+          ports:
+            - containerPort: {{ .Values.deployment.containers.ports}}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.deployment.containers.readinessProbe.path}}
+              port: {{ .Values.deployment.containers.readinessProbe.port}}
+            initialDelaySeconds: {{ .Values.deployment.containers.readinessProbe.initialDelaySeconds}}
+            timeoutSeconds: {{ .Values.deployment.containers.readinessProbe.timeoutSeconds}}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.deployment.containers.livenessProbe.path}}
+              port: {{ .Values.deployment.containers.livenessProbe.port}}
+            initialDelaySeconds: {{ .Values.deployment.containers.livenessProbe.initialDelaySeconds}}
+            timeoutSeconds: {{ .Values.deployment.containers.livenessProbe.timeoutSeconds}}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.deployment.containers.envFrom.secretRef}}
+          env:
+            {{- range .Values.deployment.containers.env }}
+            - {name: {{ .name}}, value: {{ .value }}}
+            {{- end }}  

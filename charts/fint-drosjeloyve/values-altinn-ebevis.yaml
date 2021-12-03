@@ -1,0 +1,45 @@
+nameOverride: altinn-ebevis-service
+
+service:
+  type: LoadBalancer
+  port: 8080
+  annotations:
+    {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}
+
+deployment:
+      volumes:
+        name: credentials
+        secretName: vigo-virksomhetssertifikat
+      containers:
+        repo: fintlabsacr.azurecr.io
+        image: fint-altinn-ebevis-service
+        tag: build.21
+        volumeMounts:
+          name: credentials
+          mountPath: /credentials
+        resources:
+          limits:
+            memory: "1000Mi"
+            cpu: "500m"
+          requests:
+            memory: "500Mi"
+            cpu: "250m"
+        ports:
+          - containerPort: 8080
+        readinessProbe:
+          path: /actuator/health/readiness
+          port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        livenessProbe:
+          path: /actuator/health/liveness
+          port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+        envFrom:
+           secretRef: altinn-ebevis-service
+        env:
+          - {name: altinn.base-url, value: 'https://api.data.altinn.no/v1'}
+          - {name: scheduling.initial-delay, value: '30000'}
+          - {name: scheduling.fixed-delay, value: '60000'}
+          - {name: altinn.key-store-file, value: '/credentials/vigo.p12'}
