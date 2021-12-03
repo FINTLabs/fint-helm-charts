@@ -1,13 +1,13 @@
 replicaCount: 1
 nameOverride: oneroster-rest-provider-agder
+environment: beta
 onePasswordItem: 
-  name: 
+  name: oneroster-agder
   create: false
 
 service:
   type: LoadBalancer
-  ports:
-    - port: 8080
+  port: 8080
   
 deployment:
   containers:

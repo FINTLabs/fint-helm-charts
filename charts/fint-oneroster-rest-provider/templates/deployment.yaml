@@ -1,61 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fint-oneroster-rest-provider.fullname" . }}
+  name: {{ include "fint-oneroster-rest-provider.name" . }}
   labels:
-    {{- include "fint-oneroster-rest-provider.labels" . | nindent 4 }}
+    io.kompose.service: {{ include "fint-oneroster-rest-provider.name" . }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "fint-oneroster-rest-provider.selectorLabels" . | nindent 6 }}
+      io.kompose.service: {{ include "fint-oneroster-rest-provider.name" . }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "fint-oneroster-rest-provider.selectorLabels" . | nindent 8 }}
+        io.kompose.service: {{ include "fint-oneroster-rest-provider.name" . }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "fint-oneroster-rest-provider.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ include "fint-oneroster-rest-provider.name" . }}
+          image: {{ .Values.deployment.containers.repo}}/{{ .Values.deployment.containers.image}}:{{ .Values.deployment.containers.tag}}
+          resources:
+            limits:
+              cpu: {{ .Values.deployment.containers.resources.limits.cpu}}
+              memory: {{ .Values.deployment.containers.resources.limits.memory}}
+            requests:
+              cpu: {{ .Values.deployment.containers.resources.requests.cpu}}
+              memory: {{ .Values.deployment.containers.resources.requests.memory}}
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            - containerPort: {{ .Values.deployment.containers.resources.ports.containerPort}}
           readinessProbe:
             httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+              path: {{ .Values.deployment.containers.resources.readinessProbe.httpGet.path}}
+              port: {{ .Values.deployment.containers.resources.readinessProbe.httpGet.port}}
+            initialDelaySeconds: {{ .Values.deployment.containers.resources.readinessProbe.initialDelaySeconds}}
+            timeoutSeconds: {{ .Values.deployment.containers.resources.readinessProbe.timeoutSeconds}}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.deployment.containers.resources.livenessProbe.httpGet.path}}
+              port: {{ .Values.deployment.containers.resources.livenessProbe.httpGet.port}}
+            initialDelaySeconds: {{ .Values.deployment.containers.resources.livenessProbe.initialDelaySeconds}}
+            timeoutSeconds: {{ .Values.deployment.containers.resources.livenessProbe.timeoutSeconds}}
+          env:
+            {{- range .Values.deployment.containers.env }}
+            - {name: {{ .name}}, value: {{ .value }}}
+            {{- end }}   
