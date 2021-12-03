@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fint-kulturtanken.name" . }} 
+  labels:
+    io.kompose.service: {{ include "fint-kulturtanken.name" . }}
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: {{ include "fint-kulturtanken.name" . }}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: {{ include "fint-kulturtanken.name" . }}
+    spec:
+      containers:
+        - name: {{ include "fint-kulturtanken.name" . }}
+          image: {{ .Values.deployment.image}}/{{ include "fint-kulturtanken.name" . }}:{{ .Values.deployment.tag}}
+          resources:
+            limits:
+              cpu: {{ .Values.deployment.resources.limits.cpu}}
+              memory: {{ .Values.deployment.resources.limits.memory}}
+            requests:
+              cpu: {{ .Values.deployment.resources.requests.cpu}}
+              memory: {{ .Values.deployment.resources.requests.memory}}
+          ports:
+            - containerPort: {{ .Values.deployment.ports.containerPort}}
+          readinessProbe:
+            initialDelaySeconds: {{default 60 .Values.deployment.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{default 5 .Values.deployment.readinessProbe.timeoutSeconds}}
+            httpGet:
+              port: {{ .Values.deployment.readinessProbe.httpGet.port}}
+              path: {{ .Values.deployment.readinessProbe.httpGet.path}}
+          env:
+            {{- range .Values.deployment.env }}
+            - {name: {{ .name}}, value: {{ .value }}}
+            {{- end }}   
