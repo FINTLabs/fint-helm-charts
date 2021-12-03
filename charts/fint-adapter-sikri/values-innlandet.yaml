@@ -1,0 +1,156 @@
+# Default values for fint-adapter-sikri.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+nameOverride: adapter-sikri-arkiv-innlandetfylke
+
+onePasswordItem: 
+  name: 
+  create: false
+
+environment:
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+volumes:
+  - name: tempdir
+    emptyDir:
+      sizeLimit: 1G
+volumeMounts:
+  - name: tempdir
+    mountPath: /temp
+
+image:
+  repository: fintlabsacr.azurecr.io/sikri-arkiv-adapter
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: PR-38.37
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+
+containerPort: 8091
+
+secretRef:
+  name: innlandetfylke-elements-adapter
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  limits:
+      memory: "2Gi"
+      cpu: "2"
+  requests:
+    memory: "1Gi"
+    cpu: "250m"
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+env:
+  - {name: TZ, value: Europe/Oslo}
+  - name: JAVA_TOOL_OPTIONS
+    value: >-
+      -Xmx1G -verbose:gc
+      -XX:+ExitOnOutOfMemoryError
+      -Dfile.encoding=UTF-8
+      -Dcom.sun.xml.ws.transport.http.client.HttpTransportPipe.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump=true
+      -Dcom.sun.xml.ws.transport.http.HttpAdapter.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.HttpAdapter.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold=10000
+      -Dcom.sun.security.enableAIAcaIssuers=true                
+  - {name: fint.adapter.endpoints.providers.kodeverk, value: https://beta.felleskomponent.no/arkiv/kodeverk/provider}
+  - {name: fint.adapter.endpoints.providers.kulturminne, value: https://beta.felleskomponent.no/arkiv/kulturminnevern/provider}
+  - {name: fint.adapter.endpoints.providers.noark, value: https://beta.felleskomponent.no/arkiv/noark/provider}
+  - {name: fint.adapter.endpoints.providers.samferdsel, value: https://beta.felleskomponent.no/arkiv/samferdsel/provider}
+  - {name: fint.adapter.reject-unknown-events, value: 'false'}
+  - {name: fint.case.coding.filformat.RA-PDF, value: 'PDF'}
+  - {name: fint.case.coding.filformat.RA-TEKST, value: 'TEXT'}
+  - {name: fint.case.coding.filformat.RA-JPEG, value: 'JPEG'}
+  - {name: fint.case.coding.filformat.RA-TIFF6, value: 'TIFF'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.administrativEnhet, value: '35'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.arkivdel, value: 'DLØYVE'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.journalenhet, value: 'SAA'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.journalstatus, value: 'J'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.kKodeFagklasse, value: 'N12'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.kKodeTilleggskode, value: '&18'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.ordning, value: 'ORGNR'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.tittel, value: '${organisasjonsnavn}'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.1.verdi, value: '${organisasjonsnummer}'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.ordning, value: 'EMNE'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.2.verdi, value: 'N12'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.3.ordning, value: 'KTILLEGG'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.klassifikasjon.3.verdi, value: '&18'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.primarklassifikasjon, value: 'ORGNR'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.saksstatus, value: 'B'}
+  - {name: fint.case.defaults.soknaddrosjeloyve.title.cases, value: 'Drosjeløyve - ${organisasjonsnavn} - ${organisasjonsnummer}'}
+  - {name: fint.case.defaults.tilskuddfartoy.administrativEnhet, value: '3938' }
+  - {name: fint.case.defaults.tilskuddfartoy.arkivdel, value: SA }
+  - {name: fint.case.defaults.tilskuddfartoy.avskrivningsmaate, value: TE }
+  - {name: fint.case.defaults.tilskuddfartoy.dokumentstatus, value: F }
+  - {name: fint.case.defaults.tilskuddfartoy.dokumentType, value: ND }
+  - {name: fint.case.defaults.tilskuddfartoy.journalenhet, value: 'SAA' }
+  - {name: fint.case.defaults.tilskuddfartoy.journalpostType, value: I }
+  - {name: fint.case.defaults.tilskuddfartoy.journalstatus, value: J }
+  - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.ordning, value: 'EMNE' }
+  - {name: fint.case.defaults.tilskuddfartoy.klassifikasjon.1.verdi, value: 'C59' }
+  - {name: fint.case.defaults.tilskuddfartoy.korrespondansepartType, value: EA }
+  - {name: fint.case.defaults.tilskuddfartoy.saksansvarlig, value: '2203' }
+  - {name: fint.case.defaults.tilskuddfartoy.saksbehandler, value: '2203' }
+  - {name: fint.case.defaults.tilskuddfartoy.saksmappeType, value: KA }
+  - {name: fint.case.defaults.tilskuddfartoy.saksstatus, value: B }
+  - {name: fint.case.defaults.tilskuddfartoy.title.cases, value: '${kallesignal} - ${fartoyNavn} - Søknad om tilskudd post 74 - fartøyvern' }
+  - {name: fint.case.defaults.tilskuddfartoy.title.records, value: '#{tittel.replaceFirst("Søknad om tilskudd.*","")}'}
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.administrativEnhet, value: '3938' }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.arkivdel, value: SA }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.avskrivningsmaate, value: TE }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.dokumentstatus, value: F }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.dokumentType, value: ND }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.journalenhet, value: 'SAA' }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.journalpostType, value: I }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.journalstatus, value: J }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.ordning, value: 'EMNE' }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.klassifikasjon.1.verdi, value: 'C59' }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.korrespondansepartType, value: EA }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksansvarlig, value: '2271' }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksbehandler, value: '2271' }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksmappeType, value: KA }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.saksstatus, value: B }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.title.cases, value: '${link:matrikkelnummer.kommunenummer#kode}-${matrikkelnummer.gardsnummer}/${matrikkelnummer.bruksnummer} - ${bygningsnavn} - Søknad om tilskudd post 71 - freda bygninger i privat eie - ${link:matrikkelnummer.kommunenummer#navn} kommune' }
+  - {name: fint.case.defaults.tilskuddfredabygningprivateie.title.records, value: '#{tittel.replaceFirst("Søknad om tilskudd.*","")}'}
+  - {name: fint.file-cache.directory, value: '/temp'}
+  - {name: fint.sikri.identity.casetype.default, value: digisak}
+  - {name: fint.sikri.identity.casetype.soknaddrosjeloyve, value: samferdsel}
+  - {name: fint.sikri.identity.casetype.tilskuddfartoy, value: digisak}
+  - {name: fint.sikri.identity.casetype.tilskuddfredabygningprivateie, value: digisak}
+  - {name: fint.sikri.variantformat, value: P }
+  - {name: fint.sikri.wsdl-location, value: /data }
+  - {name: logging.level.no.fint.arkiv, value: trace}
+  - {name: logging.level.no.fint.sikri, value: trace}
+  - {name: security.basic.enabled, value: "false"}
+  - {name: springfox.title, value: "Elements Adapter for Innlandet"}
+  # Client received SOAP Fault from server: Det er ikke tillatt å opprette journalposter med denne status
+  #- {name: fint.case.formats.field.tilskuddfartoy.customAttribute1, value: '${kallesignal}' }
+  #- {name: fint.case.formats.field.tilskuddfartoy.customAttribute13, value: '${soknadsnummer.identifikatorverdi}' }
+  #- {name: fint.case.formats.field.tilskuddfartoy.customAttribute2, value: '${fartoyNavn}' }
+  #- {name: fint.case.formats.field.tilskuddfartoy.customAttribute4, value: '${kulturminneId}' }
