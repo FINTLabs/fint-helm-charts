@@ -9,6 +9,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - {name: '{{ .Values.service.ports.name}}', port: {{ .Values.service.ports.port}}}
+    - name: {{ .Values.service.ports.name}}
+      port: {{ .Values.service.ports.port}}
   selector:
     io.kompose.service: {{ include "fint-altinn-download-queue-service.name" . }}
