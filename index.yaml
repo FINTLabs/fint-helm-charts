@@ -33,6 +33,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-admin-portal-0.1.0/fint-admin-portal-0.1.0.tgz
     version: 0.1.0
+  fint-altinn-ebevis-service:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2021-12-06T13:51:08.880011316Z"
+    description: A Helm chart for fint-altinn-ebevis-service
+    digest: d567b4ec7fa72fe4e15f64259807971cb30eba6602737086f13029b09d0f3f65
+    name: fint-altinn-ebevis-service
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-altinn-ebevis-service-1.0.0/fint-altinn-ebevis-service-1.0.0.tgz
+    version: 1.0.0
   fint-azure-service:
   - apiVersion: v2
     appVersion: 1.0.0
