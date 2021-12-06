@@ -1,61 +1,57 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fint-altinn-ebevis-service.fullname" . }}
-  labels:
-    {{- include "fint-altinn-ebevis-service.labels" . | nindent 4 }}
+  name: {{ include "fint-altinn-ebevis-service.name" . }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
-      {{- include "fint-altinn-ebevis-service.selectorLabels" . | nindent 6 }}
+      app: {{ include "fint-altinn-ebevis-service.name" . }}
+  strategy:
+    type: {{ .Values.deployment.strategy.type}}
+    rollingUpdate: 
+      maxSurge: {{ .Values.deployment.strategy.rollingUpdate.maxSurge}}
+      maxUnavailable: {{ .Values.deployment.strategy.rollingUpdate.maxUnavailable}}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "fint-altinn-ebevis-service.selectorLabels" . | nindent 8 }}
+        app: {{ include "fint-altinn-ebevis-service.name" . }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "fint-altinn-ebevis-service.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: {{ .Values.deployment.volumes.name}}
+          secret:
+            secretName: {{ .Values.deployment.volumes.secretName}}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ include "fint-altinn-ebevis-service.name" . }}
+          image: {{ .Values.deployment.containers.repository}}/{{ .Values.deployment.containers.image}}:{{ .Values.deployment.containers.tag}}
+          volumeMounts:
+            - name: {{ .Values.deployment.volumeMounts.name}}
+              mountPath: {{ .Values.deployment.volumeMounts.mountPath}}
+          resources:
+            limits:
+              memory: {{ .Values.deployment.resources.limits.memory}}
+              cpu: {{ .Values.deployment.resources.limits.cpu}}
+            requests:
+              memory: {{ .Values.deployment.resources.requests.memory}}
+              cpu: {{ .Values.deployment.resources.requests.cpu}}
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
+            - containerPort: {{ .Values.deployment.resources.containerPort}}
           readinessProbe:
             httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+              path: {{ .Values.deployment.readinessProbe.path}}
+              port: {{ .Values.deployment.readinessProbe.port}}
+            initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds}}
+            timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds}}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.deployment.livenessProbe.path}}
+              port: {{ .Values.deployment.livenessProbe.port}}
+            initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds}}
+            timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds}}
+          
+          envFrom:
+            - secretRef:
+                name: {{ include "fint-altinn-ebevis-service.name" . }}
+          env:
+            {{- range .Values.deployment.env }}
+              - {name: {{ .name}}, value: {{ .value | toJson}}}
+            {{- end }}
