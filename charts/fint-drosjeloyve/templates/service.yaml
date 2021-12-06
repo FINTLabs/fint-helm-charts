@@ -6,6 +6,6 @@ metadata:
 spec:
   selector:
     app: {{ include "fint-drosjeloyve.name" . }}
-  type: {{ .Values.drosjeloyve.service.type}}
+  type: {{ .Values.service.type}}
   ports:
-    - {name: '{{ .Values.drosjeloyve.service.port }}', port: {{ .Values.drosjeloyve.service.port }}}
+    - {name: '{{ .Values.service.port }}', port: {{ .Values.service.port }}}
