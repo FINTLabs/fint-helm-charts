@@ -44,6 +44,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-azure-service-0.1.0/fint-azure-service-0.1.0.tgz
     version: 0.1.0
+  fint-betaling:
+  - apiVersion: v2
+    appVersion: 3.8.11
+    created: "2021-12-06T12:36:48.186333116Z"
+    description: A Helm chart for Betaling Adapter Visma Enterprise Fakturering
+    digest: 4ae22aeb4e7eb8bd8503045c60f26122df5d8cc4b72cae243fca34990b92949f
+    name: fint-betaling
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-betaling-0.1.0/fint-betaling-0.1.0.tgz
+    version: 0.1.0
   fint-core-stack:
   - apiVersion: v2
     appVersion: 3.9.0
