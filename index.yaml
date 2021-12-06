@@ -33,6 +33,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-admin-portal-0.1.0/fint-admin-portal-0.1.0.tgz
     version: 0.1.0
+  fint-altinn-download-queue-service:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2021-12-06T13:56:08.133140997Z"
+    description: A Helm chart for fint-altinn-download-queue-service
+    digest: 93e8d07b69f6bb059772b6a46652d59bde855aa0409b82b3e785dbd01ddaa9ac
+    name: fint-altinn-download-queue-service
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-altinn-download-queue-service-1.0.0/fint-altinn-download-queue-service-1.0.0.tgz
+    version: 1.0.0
   fint-altinn-ebevis-service:
   - apiVersion: v2
     appVersion: 1.0.0
