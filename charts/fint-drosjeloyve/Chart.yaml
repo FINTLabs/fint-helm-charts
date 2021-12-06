@@ -1,0 +1,9 @@
+apiVersion: v2
+name: fint-drosjeloyve
+description: A Helm chart for drosjeloyve
+
+type: application
+
+version: 1.0.0
+
+appVersion: "3.7.0"
