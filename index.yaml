@@ -55,6 +55,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-core-stack-1.0.0/fint-core-stack-1.0.0.tgz
     version: 1.0.0
+  fint-drosjeloyve:
+  - apiVersion: v2
+    appVersion: 3.7.0
+    created: "2021-12-06T09:06:01.807919796Z"
+    description: A Helm chart for drosjeloyve
+    digest: d862947f818a6bf74db8d2c6a23feede766096bded3d771a45ffc848daedda6a
+    name: fint-drosjeloyve
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-drosjeloyve-1.0.0/fint-drosjeloyve-1.0.0.tgz
+    version: 1.0.0
   fint-environment:
   - apiVersion: v2
     appVersion: 1.16.0
