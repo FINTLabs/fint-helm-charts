@@ -77,6 +77,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-betaling-0.1.0/fint-betaling-0.1.0.tgz
     version: 0.1.0
+  fint-core-explorer:
+  - apiVersion: v2
+    appVersion: 0.0.1-SNAPSHOT
+    created: "2021-12-06T13:58:35.77255573Z"
+    description: A Helm chart for fint-core-explorer
+    digest: dcba90f44d507f6a64424bc2ac807aa05f2fcf987f0b7cfef6f000ae444f1f4d
+    name: fint-core-explorer
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-core-explorer-0.1.0/fint-core-explorer-0.1.0.tgz
+    version: 0.1.0
   fint-core-stack:
   - apiVersion: v2
     appVersion: 3.9.0
