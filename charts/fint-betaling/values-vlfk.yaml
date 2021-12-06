@@ -4,10 +4,10 @@
 
 replicaCount: 1
 
-nameOverride: betaling-agder
+nameOverride: betaling-vlfk
 
 onePasswordItem: 
-  name: betaling-agder
+  name: betaling-vlfk
   create: true
 
 environment:
@@ -37,7 +37,7 @@ image:
   repository: fintlabsacr.azurecr.io/betaling
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: PR-68.10
+  tag: build.83
 
 service:
   type: LoadBalancer
@@ -48,7 +48,7 @@ service:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 
 
-secretRef: betaling-agder
+secretRef: betaling-vlfk
 configMapRef: fint-environment
 
 resources: 
@@ -65,5 +65,4 @@ resources:
     cpu: "250m"
 
 env:
-  - {name: fint.betaling.invoice-update-rate, value: '3600000'}
-  - {name: fint.betaling.principal-matching-strategy, value: 'agder'}
+  - {name: fint.betaling.invoice-update-rate, value: '1200000'}

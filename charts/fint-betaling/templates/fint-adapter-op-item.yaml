@@ -5,5 +5,5 @@ metadata:
   name: {{ include "fint-betaling.name" . }}
   labels:
 spec:
-  itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Values.onePasswordItem }}"
+  itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Values.onePasswordItem.name }}"
 {{- end }}
