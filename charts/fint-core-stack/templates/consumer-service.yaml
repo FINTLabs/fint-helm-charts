@@ -7,9 +7,9 @@ metadata:
     fint.role: consumer
     {{- include "fint-environment.labels" . | nindent 4 }}
 
-  name: consumer-{{ .Values.name}}
+  name: consumer-{{ include "fint-core-stack.name" . }}
 spec:
   type: LoadBalancer
   ports:
     - {name: '{{ .Values.consumer.service.port }}', port: {{ .Values.consumer.service.port }}}
-  selector: {fint.stack: {{ .Values.name}}, fint.role: consumer}
+  selector: {fint.stack: {{ include "fint-core-stack.name" . }}, fint.role: consumer}
