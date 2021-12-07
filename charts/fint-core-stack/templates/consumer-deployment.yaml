@@ -2,20 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels: 
-    fint.stack: {{ .Values.name }}
+    fint.stack: {{ include "fint-core-stack.name" . }}
     fint.role: consumer
     {{- include "fint-environment.labels" . | nindent 4 }}
-  name: consumer-{{ .Values.name }}
+  name: consumer-{{ include "fint-core-stack.name" . }}
 spec:
   replicas: 1
   selector:
-    matchLabels: {fint.stack: {{ .Values.name }}, fint.role: consumer}
+    matchLabels: {fint.stack: {{ include "fint-core-stack.name" . }}, fint.role: consumer}
   strategy:
     type: RollingUpdate
     rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
   template:
     metadata:
-      labels: {fint.stack: {{ .Values.name }}, fint.role: consumer}
+      labels: {fint.stack: {{ include "fint-core-stack.name" . }}, fint.role: consumer}
     spec:
       containers:
         - envFrom:
@@ -39,7 +39,7 @@ spec:
             {{ end }}
           image: "{{ .Values.consumer.deployment.image.repository }}:{{ .Values.consumer.deployment.image.tag }}"
           imagePullPolicy: "{{ .Values.consumer.deployment.image.pullPolicy }}"
-          name: consumer-{{ .Values.name }}
+          name: consumer-{{ include "fint-core-stack.name" . }}
           ports:
             - {containerPort: {{ .Values.consumer.deployment.port}}}
           readinessProbe:
