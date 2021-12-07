@@ -2,21 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels: 
-    fint.stack: {{ .Values.name}}
+    fint.stack: {{ include "fint-core-stack.name" . }}
     fint.role: provider
     {{- include "fint-environment.labels" . | nindent 4 }}
 
-  name: provider-{{ .Values.name}}
+  name: provider-{{ include "fint-core-stack.name" . }}
 spec:
   replicas: 1
   selector:
-    matchLabels: {fint.stack: {{ .Values.name}}, fint.role: provider}
+    matchLabels: {fint.stack: {{ include "fint-core-stack.name" . }}, fint.role: provider}
   strategy:
     type: RollingUpdate
     rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
   template:
     metadata:
-      labels: {fint.stack: {{ .Values.name}}, fint.role: provider}
+      labels: {fint.stack: {{ include "fint-core-stack.name" . }}, fint.role: provider}
     spec:
       containers:
         - envFrom:
@@ -30,7 +30,7 @@ spec:
             - {name: fint.hazelcast.kubernetes.enabled, value: 'true'}
             - {name: fint.hazelcast.kubernetes.namespace, value: default}
             - {name: fint.hazelcast.kubernetes.labelName, value: fint.stack}
-            - {name: fint.hazelcast.kubernetes.labelValue, value: {{ .Values.name}}}
+            - {name: fint.hazelcast.kubernetes.labelValue, value: {{ include "fint-core-stack.name" . }}}
             - {name: server.context-path, value: {{ .Values.provider.deployment.contextPath }}}
             {{- range .Values.provider.deployment.environments }}
             - {name: {{ .name}}, value: {{ .value }}}

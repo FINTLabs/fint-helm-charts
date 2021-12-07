@@ -3,7 +3,7 @@ kind: Service
 metadata:
   annotations: {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}
   labels: 
-    fint.stack: {{ .Values.name }}
+    fint.stack: {{ include "fint-core-stack.name" . }}
     fint.role: provider
     {{- include "fint-environment.labels" . | nindent 4 }}
   name: provider-{{ .Values.name}}
@@ -11,4 +11,4 @@ spec:
   type: LoadBalancer
   ports:
     - {name: '8080', port: 8080}
-  selector: {fint.stack: {{ .Values.name }}, fint.role: provider}
+  selector: {fint.stack: {{ include "fint-core-stack.name" . }}, fint.role: provider}
