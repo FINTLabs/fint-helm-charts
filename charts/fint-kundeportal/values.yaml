@@ -14,7 +14,7 @@ image:
   tag: ""
 
 imagePullSecrets: []
-nameOverride: fint-kunde-portal
+nameOverride: kunde-portal
 fullnameOverride: ""
 
 annotations:
@@ -37,7 +37,9 @@ strategy:
 selector:
   io.kompose.service: fint-kunde-portal
 
-secretRef: fint-portal-user
+envFrom:
+  - secretRef: 
+      name: fint-portal-user
 
 containerPort: 8080
 
@@ -51,7 +53,6 @@ service:
   type: LoadBalancer
   port: 80
   annotations:
-    kompose.version: 1.16.0 (HEAD)
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
   selector:
     io.kompose.service: fint-kunde-portal
@@ -66,7 +67,118 @@ resources:
     memory: "2Gi"
   requests:
     cpu: "250m"
-    memory: "1Gi" 
+    memory: "1Gi"
 
 env:
- 
+  - name: TZ
+    value: Europe/Oslo
+  - name: fint.client-config.test-service-base-url
+    value: ""
+  - name: fint.client-config.linkwalker-base-url
+    value: ""
+  - name: logging.level.no.fint.portal.security
+    value: debug
+  - name: fint.unleash.api
+    value: http://unleash-server:4242/api/
+
+nginx:
+  name: nginx
+  image: nginx:1.15.10
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "128Mi"
+  env:
+    - name: TZ
+      value: Europe/Oslo
+  containerPort: 80
+  volumeMounts:
+    - mountPath: /etc/nginx/conf.d
+      name: nginx-kunde-portal
+
+frontend:
+  name: frontend
+  image: fintlabsacr.azurecr.io/kunde-portal-frontend:latest
+  imagePullPolicy: Always
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "128Mi"
+  containerPort: 8000
+  env:
+    - name: TZ
+      value: Europe/Oslo
+  
+test_runner:
+  name: test-runner
+  image: fintlabsacr.azurecr.io/test-runner:latest
+  imagePullPolicy: Always
+  resources:
+    limits:
+      cpu: "2"
+      memory: "2Gi"
+    requests:
+      cpu: "250m"
+      memory: "1Gi"
+  containerPort: 8082
+  envFrom:
+    - secretRef:
+        name: fint-portal-user
+  env:
+    - name: server.port
+      value: "8082"
+
+link_walker:
+  name: link-walker
+  image: fintlabsacr.azurecr.io/link-walker:latest
+  imagePullPolicy: Always
+  resources:
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+    requests:
+      cpu: "250m"
+      memory: "3Gi"
+  containerPort: 8081
+  envFrom:
+    - secretRef:
+        name: fint-portal-user
+  env:
+    - name: TZ
+      value: Europe/Oslo
+    - name: JAVA_TOOL_OPTIONS
+      value: '-XX:+ExitOnOutOfMemoryError -Xmx3G -verbose:gc'
+    - name: server.port
+      value: "8081"
+    - name: fint.rest-template.provider
+      value: portal-api
+
+zendesk_integration:
+  name: zendesk-integration
+  image: fintlabsacr.azurecr.io/zendesk-integration:PR-19.10
+  resources:
+    limits:
+      cpu: "2"
+      memory: "2Gi"
+    requests:
+      cpu: "250m"
+      memory: "1Gi"
+  containerPort: 8083
+  envFrom:
+    - secretRef:
+        name: fint-portal-user
+    - secretRef:
+        name: zendesk-integration
+  env:
+    - name: logging.level.no.fint.provisioning
+      value: debug
+    - name: fint.webclient.connection-provider.type
+      value: NEW
+    - name: fint.zendesk.timeout
+      value: PT10S
+    - name: TZ
+      value: Europe/Oslo
+    - name: fint.zendesk.prov.user.queuing.delay
+      value: "600000"
+    - name: server.port
+      value: "8083"
