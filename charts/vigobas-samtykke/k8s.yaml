@@ -1,0 +1,147 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vigobas-samtykke-proxy
+  namespace: vigobas
+data:
+  nginx.conf: |
+    server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+      #server_name no;
+      #frontend proxy
+      location / {
+          proxy_pass http://localhost:8000;
+          proxy_set_header Connection '';
+          proxy_http_version 1.1;
+          chunked_transfer_encoding off;
+          proxy_buffering off;
+          proxy_cache off;
+      }
+      
+      #backend proxy
+      location /api/ {
+          proxy_pass http://localhost:9000;
+          proxy_set_header Connection '';
+          proxy_http_version 1.1;
+          chunked_transfer_encoding off;
+          proxy_buffering off;
+          proxy_cache off;
+      }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  labels:
+    io.kompose.service: vigobas-samtykke-viken
+  name: vigobas-samtykke-viken
+  namespace: vigobas
+spec:
+  ports:
+  - name: "80"
+    port: 80
+  type: LoadBalancer
+  selector:
+    io.kompose.service: vigobas-samtykke-viken
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: vigobas-samtykke-viken
+  name: vigobas-samtykke-viken
+  namespace: vigobas
+  annotations:
+    operator.1password.io/item-path: "vaults/aks-api-vault/items/samtykke-viken"
+    operator.1password.io/item-name: "samtykke-viken"
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  revisionHistoryLimit: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      io.kompose.service: vigobas-samtykke-viken
+  template:
+    metadata:
+      labels:
+        io.kompose.service: vigobas-samtykke-viken
+    spec:
+      restartPolicy: Always
+      volumes:
+        - name: vigobas-samtykke-proxy
+          configMap:
+            name: vigobas-samtykke-proxy
+      containers:
+      - name: frontend
+        image: fintlabsacr.azurecr.io/vigobas-samtykke-frontend:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+      - name: backend
+        image: fintlabsacr.azurecr.io/vigobas-samtykke-backend:build.${BUILD_NUMBER}_${GIT_COMMIT}
+        envFrom:
+        - secretRef:
+            name: samtykke-viken
+        env:
+        - {name: "fintcredentials__username", value: $(username)}
+        - {name: "fintcredentials__password", value: $(password)}
+        - {name: "fintcredentials__clientId", value: $(clientId)}
+        - {name: "fintcredentials__openIdSecret", value: $(openIdSecret)}
+        - {name: "fintcredentials__scope", value: $(scope)}
+        - {name: "fintcredentials__idpUri", value: $(idpUri)}
+        - {name: "fintcredentials__assetId", value: $(assetId)}
+
+        - {name: "FintUri__FelleskomponentUri", value: "https://beta.felleskomponent.no/"}
+
+        - {name: "Branding__default__logo", value: "01-viken.png"}
+        - {name: "Branding__default__primaryColor", value: "#003b5c"}
+        - {name: "Branding__default__primaryColorLight", value: "#99d6ea"}
+        - {name: "Branding__default__secondaryColor", value: "#0085ca"}
+        - {name: "Branding__default__featureColor1", value: "#006298"}
+        - {name: "Branding__default__featureColor2", value: "#bbdde6"}
+        - {name: "Branding__default__phoneNumber", value: "32300000"}
+        - {name: "Branding__default__mail", value: "brukerhjelp@viken.no"}
+        - {name: "Branding__default__countyName", value: "Viken Fylkeskommune"}
+
+        ports:
+        - containerPort: 9000
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+        readinessProbe:
+          httpGet:
+            path: /api/lb/test
+            port: 9000
+          timeoutSeconds: 5
+      - name: proxy
+        image: nginx:1.15
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "128Mi"
+        env:
+        - name: TZ
+          value: Europe/Oslo
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: /etc/nginx/conf.d
+            name: vigobas-samtykke-proxy
