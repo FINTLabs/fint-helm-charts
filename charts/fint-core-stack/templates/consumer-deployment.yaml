@@ -4,7 +4,7 @@ metadata:
   labels: 
     fint.stack: {{ include "fint-core-stack.name" . }}
     fint.role: consumer
-    {{- include "fint-environment.labels" . | nindent 4 }}
+    {{- include "fint-core-stack.labels" . | nindent 4 }}
   name: consumer-{{ include "fint-core-stack.name" . }}
 spec:
   replicas: 1
@@ -28,8 +28,9 @@ spec:
             - {name: fint.hazelcast.kubernetes.enabled, value: 'true'}
             - {name: fint.hazelcast.kubernetes.namespace, value: default}
             - {name: fint.hazelcast.kubernetes.labelName, value: fint.stack}
-            - {name: fint.hazelcast.kubernetes.labelValue, value: {{ .Values.name}}}
+            - {name: fint.hazelcast.kubernetes.labelValue, value: {{ include "fint-core-stack.name" . }}}
             - {name: server.context-path, value: {{ .Values.consumer.deployment.contextPath }}}
+            - {name: fint.relations.default-base-url, value: {{ include "fint-core-stack.defaultBaseUrl" . }}}
             {{- range .Values.consumer.deployment.environments }}
             - {name: {{ .name}}, value: {{ .value }}}
             {{- end }}             

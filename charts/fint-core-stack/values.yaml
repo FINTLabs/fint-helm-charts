@@ -2,14 +2,18 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-name: fint-core-stack
+nameOverride: test-stack
+
+# Environment can be any of these values: api | beta | alpha | pwf
+environment: pwf
+
 consumer:
   deployment:
     image: 
       repository: fintlabsacr.azurecr.io/consumer-profilbilde
       pullPolicy: IfNotPresent
       tag: build.14
-    contextPath: /profilbilde
+    contextPath: /
     port: 8080
     resources:
       limitsMemory: 3Gi 

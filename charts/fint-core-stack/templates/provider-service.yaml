@@ -5,8 +5,8 @@ metadata:
   labels: 
     fint.stack: {{ include "fint-core-stack.name" . }}
     fint.role: provider
-    {{- include "fint-environment.labels" . | nindent 4 }}
-  name: provider-{{ .Values.name}}
+    {{- include "fint-core-stack.labels" . | nindent 4 }}
+  name: provider-{{ include "fint-core-stack.name" . }}
 spec:
   type: LoadBalancer
   ports:

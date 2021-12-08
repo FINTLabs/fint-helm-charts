@@ -1,4 +1,22 @@
 {{/*
+Creates defaultBaseUrl based on environment
+*/}}
+{{- define "fint-core-stack.defaultBaseUrl" -}}
+{{- if .Values.environment eq "pwf" }}
+{{- printf "https://play-with-fint.felleskomponent.no" }}
+{{- else }}
+{{- printf "https://%s.felleskomponent.no" .Values.environment }}
+{{- end }}
+{{- end }}
+
+{{/*
+Creates One Password Vault path based on environment
+*/}}
+{{- define "fint-core-stack.onePasswordVaultPath" -}}
+{{- printf "vaults/aks-%s-vault/items" .Values.environment }}
+{{- end }}
+
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "fint-core-stack.name" -}}
@@ -10,7 +28,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "fint-environment.fullname" -}}
+{{- define "fint-core-stack.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +44,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "fint-environment.chart" -}}
+{{- define "fint-core-stack.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "fint-environment.labels" -}}
-helm.sh/chart: {{ include "fint-environment.chart" . }}
-{{ include "fint-environment.selectorLabels" . }}
+{{- define "fint-core-stack.labels" -}}
+helm.sh/chart: {{ include "fint-core-stack.chart" . }}
+{{ include "fint-core-stack.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +63,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "fint-environment.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "fint-environment.name" . }}
+{{- define "fint-core-stack.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "fint-core-stack.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "fint-environment.serviceAccountName" -}}
+{{- define "fint-core-stack.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "fint-environment.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "fint-core-stack.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

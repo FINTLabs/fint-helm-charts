@@ -1,0 +1,7 @@
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+ name: fint-events-azure-eventhub
+ labels:
+spec:
+ itemPath: {{ include "fint-core-stack.onePasswordVaultPath" . }}/"fint-events-azure-eventhub"

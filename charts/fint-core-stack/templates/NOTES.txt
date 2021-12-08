@@ -1,4 +1,4 @@
-Secret {{ include "fint-events-azure-eventhub.name" . }} is created.
+Secret for {{ include "fint-core-stack.name" . }} is created.
 
 Run: 
 
