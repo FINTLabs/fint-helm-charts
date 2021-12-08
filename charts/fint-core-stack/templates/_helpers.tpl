@@ -2,10 +2,10 @@
 Creates defaultBaseUrl based on environment
 */}}
 {{- define "fint-core-stack.defaultBaseUrl" -}}
-{{- if .Values.environment eq "pwf" }}
-{{- printf "https://play-with-fint.felleskomponent.no" }}
+{{- if eq .Values.environment "pwf" }}
+{{- printf "https://play-with-fint.felleskomponent.no" | quote }}
 {{- else }}
-{{- printf "https://%s.felleskomponent.no" .Values.environment }}
+{{- printf "https://%s.felleskomponent.no" .Values.environment | quote}}
 {{- end }}
 {{- end }}
 

@@ -5,7 +5,10 @@
 nameOverride: test-stack
 
 # Environment can be any of these values: api | beta | alpha | pwf
-environment: pwf
+environment: beta
+
+fint-core-infra:
+  environment: beta
 
 consumer:
   deployment:

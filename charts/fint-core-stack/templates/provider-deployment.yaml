@@ -37,7 +37,7 @@ spec:
             {{- end }} 
           image: "{{ .Values.provider.deployment.image.repository }}:{{ .Values.provider.deployment.image.tag }}"
           imagePullPolicy: "{{ .Values.provider.deployment.image.pullPolicy }}"
-          name: provider-{{ .Values.name }}
+          name: provider-{{ include "fint-core-stack.name" . }}
           ports:
             - {containerPort: 8080}
           readinessProbe:

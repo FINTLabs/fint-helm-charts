@@ -24,3 +24,8 @@ version: 1.0.0
 appVersion: "3.9.0"
 
 icon: https://www.fintlabs.no/_media/fint-by-vigo-white.svg
+
+dependencies:
+- name: fint-core-infra
+  version: "~1.0.0"
+  repository: "file://../fint-core-infra"
