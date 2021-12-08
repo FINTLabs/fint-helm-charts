@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fint-adapter-arkiv.name" . }}
+  name: {{ include "fint-p360-rpc-arkiv-adapter.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "fint-adapter-arkiv.name" . }}
+      app: {{ include "fint-p360-rpc-arkiv-adapter.name" . }}
   template:
     metadata:
       labels: 
-        app: {{ include "fint-adapter-arkiv.name" . }}
+        app: {{ include "fint-p360-rpc-arkiv-adapter.name" . }}
     spec:
       volumes:
         - name: tempdir
@@ -21,7 +21,7 @@ spec:
       restartPolicy: {{ .Values.restartPolicy }}
       schedulerName: {{ .Values.schedulerName }}
       containers:
-        - name: {{ include "fint-adapter-arkiv.name" . }}
+        - name: {{ include "fint-p360-rpc-arkiv-adapter.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
