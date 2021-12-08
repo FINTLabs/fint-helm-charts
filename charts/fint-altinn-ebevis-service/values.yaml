@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 nameOverride: "altinn-ebevis-service"
-xmx: 1825 
+xmx: 644 
 
 service:
   annotations: {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}

@@ -1,5 +1,5 @@
 {{/*
-Expand the name of the chart.
+Calulate memory limits from xmx value in values.yaml
 */}}
 {{- define "fint-altinn-ebevis-service.xmx" -}}
 {{- add (div (add (mul .Values.xmx 1048576) 268435456) 943718.4) 1 }}
