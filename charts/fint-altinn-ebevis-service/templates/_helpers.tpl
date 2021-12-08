@@ -1,6 +1,10 @@
 {{/*
 Expand the name of the chart.
 */}}
+{{- define "fint-altinn-ebevis-service.xmx" -}}
+{{- add (div (add (mul .Values.xmx 1048576) 268435456) 943718.4) 1 }}
+{{- end }}
+
 {{- define "fint-altinn-ebevis-service.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}

@@ -28,10 +28,12 @@ spec:
               mountPath: {{ .Values.deployment.volumeMounts.mountPath}}
           resources:
             limits:
-              memory: {{ .Values.deployment.resources.limits.memory}}
+              memory: {{ include "fint-altinn-ebevis-service.xmx" . }}Mi
+              #memory: {{ .Values.deployment.resources.limits.memory}}
               cpu: {{ .Values.deployment.resources.limits.cpu}}
             requests:
-              memory: {{ .Values.deployment.resources.requests.memory}}
+              memory: {{ div (include "fint-altinn-ebevis-service.xmx" . ) 2 }}Mi 
+              #memory: {{ .Values.deployment.resources.requests.memory}}
               cpu: {{ .Values.deployment.resources.requests.cpu}}
           ports:
             - containerPort: {{ .Values.deployment.resources.containerPort}}
