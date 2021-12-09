@@ -30,4 +30,4 @@ After the value have been added you can run the following command:
 
 After that you can install the chart 
 
-`helm install test test --debug --dry-run`
+`helm install mychart mychart/ --debug --dry-run`
