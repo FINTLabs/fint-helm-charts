@@ -20,8 +20,8 @@ dependencies:
   
 Now you have to add the template files you want to use. Go in your template/ folder and add files like deployment and service.
 In these files you only need to add one line:
-    - {{- include "lib-chart.service" .}}       - for service
-    - {{- include "lib-chart.deployment" .}}    - for deployment
+* `{{- include "lib-chart.service" .}}`       - for service
+* `{{- include "lib-chart.deployment" .}}`    - for deployment
 
 Then you can fill your values.yaml with the necessary configuration. In fint-library repo there exist a values.yaml that can be used as a guidance.
 After the value have been added you can run the following command:
