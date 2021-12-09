@@ -2,7 +2,7 @@
 Calulate memory limits from xmx value in values.yaml
 */}}
 {{- define "fint-altinn-ebevis-service.xmx" -}}
-{{- div (mul (add .Values.xmx 256) 10) 9 }}
+{{- round (div (mul (add .Values.xmx 256) 10) 9) 0 }}
 {{- end }}
 
 {{- define "fint-altinn-ebevis-service.name" -}}
