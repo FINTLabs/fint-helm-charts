@@ -39,21 +39,26 @@ spec:
             - name: http
               containerPort: {{ .Values.containerPort }}
               protocol: TCP
+          {{- with .Values.livenessProbe }}
           livenessProbe:
-            httpGet:
-              path: /
-              port: http
+          {{- toYaml . | nindent 12  }}
+          {{- end }}
           readinessProbe:
             initialDelaySeconds: {{.Values.initialDelaySeconds }}
             timeoutSeconds: {{.Values.timeoutSeconds }}
             httpGet:
               port: {{ .Values.service.port }}
-              path: /actuator/health
+              path: {{ .Values.httpGetPath }}
+              {{- with .Values.httpHeaders }}
               httpHeaders:
-                - name: x-nin
-                  value: '0'
+              {{- toYaml . | nindent 14  }}
+              {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+              {{- toYaml . | nindent 12  }}
+          {{- end }}
           envFrom:
           {{- toYaml .Values.envFrom | nindent 12 }}
           env:
