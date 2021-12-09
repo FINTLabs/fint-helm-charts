@@ -1,61 +1,82 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "vigobas-samtykke.fullname" . }}
   labels:
-    {{- include "vigobas-samtykke.labels" . | nindent 4 }}
+    io.kompose.service: {{ include "vigobas-samtykke.name" . }}
+  name: {{ include "vigobas-samtykke.name" . }}
+  namespace: {{ .Values.namespace}}
+  annotations:
+    operator.1password.io/item-path: {{ .Values.deployment.annotations.onepwitempath}}
+    operator.1password.io/item-name: {{ .Values.deployment.annotations.onepwitemname}}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
+  replicas: {{ .Values.deployment.replicas}}
+  minReadySeconds: {{ .Values.deployment.minReadySeconds}}
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit}}
+  strategy:
+    type: {{ .Values.deployment.strategy.type}}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.deployment.strategy.maxUnavailable}}
+      maxSurge: {{ .Values.deployment.strategy.maxSurge}}
   selector:
     matchLabels:
-      {{- include "vigobas-samtykke.selectorLabels" . | nindent 6 }}
+      io.kompose.service: {{ include "vigobas-samtykke.name" . }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        {{- include "vigobas-samtykke.selectorLabels" . | nindent 8 }}
+        io.kompose.service: {{ include "vigobas-samtykke.name" . }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "vigobas-samtykke.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      restartPolicy: {{ .Values.deployment.template.spec.restartPolicy}}
+      volumes:
+        - name: {{ .Values.deployment.template.spec.volumes.name}}
+          configMap:
+            name: {{ .Values.deployment.template.spec.volumes.configMap.name}}
       containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      - name: frontend
+        image: {{ .Values.frontend.image}}
+        ports:
+        - containerPort: {{ .Values.frontend.containerPort}}
+        resources:
+          limits:
+            cpu: {{ .Values.frontend.limits.cpu}}
+            memory: {{ .Values.frontend.limits.memory}}
+          requests:
+            cpu: {{  .Values.frontend.requests.cpu}}
+            memory: {{ .Values.frontend.requests.memory}}
+      - name: backend
+        image: {{ .Values.backend.image}}
+        envFrom:
+        - secretRef:
+            name: {{ .Values.backend.secretRef.name}}
+        env:
+          {{- range .Values.backend.env }}
+          - {name: {{ .name}}, value: {{ .value | toJson}}}
+          {{- end }}
+        ports:
+        - containerPort: {{ .Values.backend.containerPort}}
+        resources:
+          limits:
+            cpu: {{ .Values.backend.limits.cpu}}
+            memory: {{ .Values.backend.limits.memory}}
+          requests:
+            cpu: {{ .Values.backend.requests.cpu}}
+            memory: {{ .Values.backend.requests.memory}}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.backend.readinessProbe.path}}
+            port: {{ .Values.backend.readinessProbe.port}}
+          timeoutSeconds: {{ .Values.backend.readinessProbe.timeoutSeconds}}
+      - name: proxy
+        image: {{ .Values.proxy.image}}
+        resources:
+          limits:
+            cpu: {{ .Values.proxy.limits.cpu}}
+            memory: {{ .Values.proxy.limits.memory}}
+        env:
+          {{- range .Values.proxy.env }}
+          - {name: {{ .name}}, value: {{ .value | toJson}}}
+          {{- end }}
+        ports:
+        - containerPort: {{ .Values.proxy.containerPort}}
+        volumeMounts:
+          - mountPath: {{ .Values.proxy.volumeMounts.mountPath}}
+            name: {{ .Values.proxy.volumeMounts.name}}
