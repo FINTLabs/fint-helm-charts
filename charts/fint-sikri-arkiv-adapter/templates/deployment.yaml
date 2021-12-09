@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fint-adapter-sikri.name" . }}
+  name: {{ include "fint-sikri-arkiv-adapter.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "fint-adapter-sikri.name" . }}
+      app: {{ include "fint-sikri-arkiv-adapter.name" . }}
   template:
     metadata:
     spec:
@@ -15,7 +15,7 @@ spec:
           emptyDir:
             sizeLimit: 1G
       containers:
-        - name: {{ include "fint-adapter-sikri.name" . }}
+        - name: {{ include "fint-sikri-arkiv-adapter.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           #imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

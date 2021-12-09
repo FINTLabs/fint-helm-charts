@@ -2,7 +2,7 @@
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
-  name: {{ include "fint-adapter-sikri.name" . }}
+  name: {{ include "fint-sikri-arkiv-adapter.name" . }}
   labels:
 spec:
   itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Values.onePasswordItem }}"

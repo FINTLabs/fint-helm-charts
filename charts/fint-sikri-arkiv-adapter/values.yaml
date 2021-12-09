@@ -4,26 +4,18 @@
 
 replicaCount: 1
 
-nameOverride: betaling-vlfk
+nameOverride: 
 
 onePasswordItem: 
-  name: betaling-vlfk
-  create: true
+  name: 
+  create: false
 
 environment:
-
-annotations:
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "8080"
-  prometheus.io/path: "/actuator/prometheus"
 
 strategy:
   rollingUpdate:
     maxSurge: 1
     maxUnavailable: 0
-
-initialDelaySeconds: 90
-timeoutSeconds: 5
 
 volumes:
   - name: tempdir
@@ -34,22 +26,15 @@ volumeMounts:
     mountPath: /temp
 
 image:
-  repository: fintlabsacr.azurecr.io/betaling
+  repository: fintlabsacr.azurecr.io/sikri-arkiv-adapter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: build.83
+  tag:
 
-service:
-  type: LoadBalancer
-  port: 8080
-  labels:
-    io.kompose.service: admin-portal
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+containerPort: 8091
 
-
-secretRef: betaling-rogfk
-configMapRef: fint-environment
+secretRef:
+  name:
 
 resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -58,11 +43,22 @@ resources:
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   limits:
-    memory: "5Gi"
-    cpu: "2"
+      memory: "2Gi"
+      cpu: "2"
   requests:
-    memory: "2Gi"
+    memory: "1Gi"
     cpu: "250m"
 
 env:
-  - {name: fint.betaling.invoice-update-rate, value: '1200000'}
+  - {name: TZ, value: Europe/Oslo}
+  - name: JAVA_TOOL_OPTIONS
+    value: >-
+      -Xmx1G -verbose:gc
+      -XX:+ExitOnOutOfMemoryError
+      -Dfile.encoding=UTF-8
+      -Dcom.sun.xml.ws.transport.http.client.HttpTransportPipe.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump=true
+      -Dcom.sun.xml.ws.transport.http.HttpAdapter.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.HttpAdapter.dump=true
+      -Dcom.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold=10000
+      -Dcom.sun.security.enableAIAcaIssuers=true
