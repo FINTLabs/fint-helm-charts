@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "vigobas-samtykke.fullname" . }}
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
   labels:
-    {{- include "vigobas-samtykke.labels" . | nindent 4 }}
+    io.kompose.service: {{ include "vigobas-samtykke.name" . }}
+  name: {{ include "vigobas-samtykke.name" . }}
+  namespace: vigobas
 spec:
-  type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  - name: {{ .Values.service.ports.name}}
+    port: {{ .Values.service.ports.port}}
+  type: {{ .Values.service.type}}
   selector:
-    {{- include "vigobas-samtykke.selectorLabels" . | nindent 4 }}
+    io.kompose.service: {{ include "vigobas-samtykke.name" . }}

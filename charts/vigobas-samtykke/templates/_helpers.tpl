@@ -1,4 +1,22 @@
 {{/*
+Creates defaultBaseUrl based on environment
+*/}}
+{{- define "vigobas-samtykke.defaultBaseUrl" -}}
+{{- if .Values.environment eq "pwf" }}
+{{- printf "https://play-with-fint.felleskomponent.no" }}
+{{- else }}
+{{- printf "https://%s.felleskomponent.no" .Values.environment }}
+{{- end }}
+{{- end }}
+
+{{/*
+Creates One Password Vault path based on environment
+*/}}
+{{- define "vigobas-samtykke.onePasswordVaultPath" -}}
+{{- printf "vaults/aks-%s-vault/items" .Values.environment }}
+{{- end }}
+
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "vigobas-samtykke.name" -}}
