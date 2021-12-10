@@ -1,5 +1,5 @@
 apiVersion: v2
-name: fint-adapter-arkiv
+name: fint-p360-rpc-arkiv-adapter
 description: A Helm chart for a adapter that connects TietoEvry Public 360 to FINT
 
 # A chart can be either an 'application' or a 'library' chart.

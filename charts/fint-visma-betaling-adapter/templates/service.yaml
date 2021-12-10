@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "fint-betaling.name" . }}
+  name: {{ include "fint-visma-betaling-adapter.name" . }}
   {{- with .Values.service.annotations }}
   annotations:
       {{- toYaml . | nindent 4  }}
     {{- end }}
   labels:
-    {{- include "fint-betaling.labels" . | nindent 4 }}
+    {{- include "fint-visma-betaling-adapter.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -16,4 +16,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "fint-betaling.selectorLabels" . | nindent 4 }}
+    {{- include "fint-visma-betaling-adapter.selectorLabels" . | nindent 4 }}

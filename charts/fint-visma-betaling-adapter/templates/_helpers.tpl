@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "fint-betaling.name" -}}
+{{- define "fint-visma-betaling-adapter.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "fint-betaling.fullname" -}}
+{{- define "fint-visma-betaling-adapter.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "fint-betaling.chart" -}}
+{{- define "fint-visma-betaling-adapter.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "fint-betaling.labels" -}}
-helm.sh/chart: {{ include "fint-betaling.chart" . }}
-{{ include "fint-betaling.selectorLabels" . }}
+{{- define "fint-visma-betaling-adapter.labels" -}}
+helm.sh/chart: {{ include "fint-visma-betaling-adapter.chart" . }}
+{{ include "fint-visma-betaling-adapter.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "fint-betaling.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "fint-betaling.name" . }}
+{{- define "fint-visma-betaling-adapter.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "fint-visma-betaling-adapter.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "fint-betaling.serviceAccountName" -}}
+{{- define "fint-visma-betaling-adapter.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "fint-betaling.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "fint-visma-betaling-adapter.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
