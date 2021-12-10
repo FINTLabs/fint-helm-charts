@@ -1,0 +1,62 @@
+# Default values for fint-adapter-arkiv.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+progressDeadlineSeconds: 600
+revisionHistoryLimit: 10
+
+onePasswordItem: 
+  name: 
+  create: false
+
+environment:
+
+image:
+  repository: fintlabsacr.azurecr.io/p360-rpc-arkiv-adapter
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: 
+
+imagePullSecrets: []
+nameOverride: 
+fullnameOverride: ""
+
+secretRef: 
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: "2"
+    memory: 2Gi
+  requests:
+    cpu: 250m
+    memory: 1Gi
+
+terminationMessagePath: /dev/termination-log
+terminationMessagePolicy: File
+terminationGracePeriodSeconds: 30
+
+dnsPolicy: ClusterFirst
+restartPolicy: Always
+schedulerName: default-scheduler
+
+volumeMounts:
+  - mountPath: /temp
+    name: tempdir
+
+
+env:
+  - {name: TZ, value: Europe/Oslo}
+  - {name: JAVA_TOOL_OPTIONS, value: '-Xmx1G -verbose:gc -XX:+ExitOnOutOfMemoryError -Dfile.encoding=UTF-8'}
+  - {name: springfox.title, value: P360 RPC Adapter}
+  - {name: security.basic.enabled, value: "false"}
+  - {name: fint.adapter.reject-unknown-events, value: "true"}
+  - {name: fint.adapter.endpoints.providers.kodeverk, value: https://api.felleskomponent.no/arkiv/kodeverk/provider}
+  - {name: fint.adapter.endpoints.providers.noark, value: https://api.felleskomponent.no/arkiv/noark/provider}
+  - {name: fint.adapter.endpoints.providers.samferdsel, value: https://api.felleskomponent.no/arkiv/samferdsel/provider}
+  - {name: fint.adapter.endpoints.providers.kulturminne, value: https://api.felleskomponent.no/arkiv/kulturminnevern/provider}
+  

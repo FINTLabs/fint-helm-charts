@@ -1,0 +1,8 @@
+Secret for {{ include "fint-core-stack.name" . }} is created.
+
+Run: 
+
+    kubectl get secrets -o name | grep -i eventhub 
+
+to check secrets. 
+

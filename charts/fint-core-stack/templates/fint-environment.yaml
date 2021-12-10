@@ -1,0 +1,23 @@
+apiVersion: v1
+data:
+  JAVA_TOOL_OPTIONS: -XX:+ExitOnOutOfMemoryError -Xmx2G -verbose:gc
+  TZ: Europe/Oslo
+  endpoints.env.enabled: "false"
+  endpoints.sensitive: "false"
+  #fint.audit.mongo.buffer-size: "250000"
+  #fint.audit.mongo.collection: auditEvents
+  #fint.audit.mongo.databasename: fint-audit
+  #fint.audit.mongo.rate: "1000"
+  fint.audit.environment: 'api'
+  fint.cache.manager: default
+  fint.cache.packer: deflate
+  fint.consumer.status.created: "true"
+  fint.events.orgIds: health.fintlabs.no
+  fint.provider.max-number-of-emitters: "5"
+  #fint.relations.default-base-url: {{ .Values.defaultBaseUrl}}
+  management.security.enabled: "false"
+  spring.mvc.logResolvedException: "false"
+kind: ConfigMap
+metadata:
+  name: fint-environment
+  namespace: default

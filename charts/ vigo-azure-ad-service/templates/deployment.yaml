@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "vigo-azure-ad-service.name" . }}
+  labels:
+    {{- include "vigo-azure-ad-service.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "vigo-azure-ad-service.labels" . | nindent 8 }}
+  template:
+    metadata:
+      labels:
+        {{- include "vigo-azure-ad-service.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8  }}
+      {{- end }}
+      containers:
+        - name: {{ include "vigo-azure-ad-service.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            httpGet:
+              path: /actuator/health
+              port: http
+          resources:
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secretRef }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+              {{- toYaml . | nindent 12  }}
+          {{- end }}
+          env:
+            {{- range .Values.env }}
+            - {name: {{ .name}}, value: {{ .value | toJson}}}
+            {{- end }}

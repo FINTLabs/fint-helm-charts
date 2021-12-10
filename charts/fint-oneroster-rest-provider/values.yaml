@@ -1,0 +1,46 @@
+replicaCount: 1
+nameOverride: oneroster-rest-provider-tffk
+environment: beta
+onePasswordItem: 
+  name: oneroster-tffk
+  create: false
+
+service:
+  type: LoadBalancer
+  port: 8080
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  
+deployment:
+  containers:
+    repo: 
+    image: 
+    tag: 
+    resources:
+      limits:
+        cpu: 
+        memory: 
+      requests:
+        cpu: 
+        memory: 
+      ports:
+        containerPort: 8080
+      readinessProbe:
+        httpGet:
+          path: /
+          port: 8080
+        initialDelaySeconds: 60
+        timeoutSeconds: 5
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 8080
+        initialDelaySeconds: 120
+        timeoutSeconds: 5
+      env:
+        - name: TZ
+          value: Europe/Oslo
+        - name: JAVA_TOOL_OPTIONS
+          value: -XX:+ExitOnOutOfMemoryError -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=70
+        - name: scheduling.initial-delay
+          value: '10000'

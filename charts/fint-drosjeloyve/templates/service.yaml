@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "fint-drosjeloyve.name" . }}
+  name: {{ include "fint-drosjeloyve-service.name" . }}
   annotations: {service.beta.kubernetes.io/azure-load-balancer-internal: 'true'}
 spec:
   selector:
-    app: {{ include "fint-drosjeloyve.name" . }}
+    app: {{ include "fint-drosjeloyve-service.name" . }}
   type: {{ .Values.service.type}}
   ports:
     - {name: '{{ .Values.service.port }}', port: {{ .Values.service.port }}}
