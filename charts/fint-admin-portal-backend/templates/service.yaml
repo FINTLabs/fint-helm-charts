@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "fint-server-unleash.name" . }}
+  name: {{ include "fint-admin-portal-backend.name" . }}
   {{- with .Values.service.annotations }}
   annotations:
       {{- toYaml . | nindent 4  }}
     {{- end }}
   labels:
-    {{- include "fint-server-unleash.labels" . | nindent 4 }}
+    {{- include "fint-admin-portal-backend.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -15,7 +15,5 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-  {{- with .Values.service.selector }}
   selector:
-      {{- toYaml . | nindent 4  }}
-    {{- end }}
+    {{- include "fint-admin-portal-backend.selectorLabels" . | nindent 4 }}

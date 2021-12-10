@@ -1,37 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fint-server-unleash.name" . }}
+  name: {{ include "fint-admin-portal-backend.name" . }}
   labels:
-    {{- include "fint-server-unleash.labels" . | nindent 4 }}
+    {{- include "fint-admin-portal-backend.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  minReadySeconds: {{ .Values.minReadySeconds }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  strategy:
-    type: {{ .Values.strategy.type }}
-    rollingUpdate:
-      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
-      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
   selector:
     matchLabels:
-      {{- include "fint-server-unleash.selectorLabels" . | nindent 6 }}
+      {{- include "fint-admin-portal-backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.annotations }}
-      annotations:
+      labels:
+        {{- include "fint-admin-portal-backend.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      labels:
-        {{- include "fint-server-unleash.selectorLabels" . | nindent 8 }}
-    spec:
       containers:
-        - name: {{ include "fint-server-unleash.name" . }}
+        - name: {{ include "fint-admin-portal-backend.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -41,6 +34,11 @@ spec:
             httpGet:
               path: /
               port: http
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMapRef }}
+            - secretRef:
+                name: {{ .Values.secretRef }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

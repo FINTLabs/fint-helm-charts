@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "fint-azure-service.name" . }}
+  name: {{ include "vigo-azure-ad-service.name" . }}
   {{- with .Values.service.annotations }}
   annotations:
       {{- toYaml . | nindent 4  }}
     {{- end }}
   labels:
-    {{- include "fint-azure-service.labels" . | nindent 4 }}
+    {{- include "vigo-azure-ad-service.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:

@@ -1,51 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fint-azure-service.name" . }}
+  name: {{ include "fint-unleash.name" . }}
   labels:
-    {{- include "fint-azure-service.labels" . | nindent 4 }}
+    {{- include "fint-unleash.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   minReadySeconds: {{ .Values.minReadySeconds }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
   selector:
     matchLabels:
-      {{- include "fint-azure-service.labels" . | nindent 8 }}
+      {{- include "fint-unleash.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-        {{- include "fint-azure-service.selectorLabels" . | nindent 8 }}
-    spec:
-      {{- with .Values.volumes }}
-      volumes:
-        {{- toYaml . | nindent 8  }}
+      {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
+      labels:
+        {{- include "fint-unleash.selectorLabels" . | nindent 8 }}
+    spec:
       containers:
-        - name: {{ include "fint-azure-service.name" . }}
+        - name: {{ include "fint-unleash.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /
               port: http
           readinessProbe:
-            initialDelaySeconds: 5
-            timeoutSeconds: 5
             httpGet:
-              path: /actuator/health
+              path: /
               port: http
           resources:
-          envFrom:
-            - secretRef:
-                name: {{ .Values.secretRef }}
-          {{- with .Values.volumeMounts }}
-          volumeMounts:
-              {{- toYaml . | nindent 12  }}
-          {{- end }}
+            {{- toYaml .Values.resources | nindent 12 }}
           env:
             {{- range .Values.env }}
             - {name: {{ .name}}, value: {{ .value | toJson}}}
