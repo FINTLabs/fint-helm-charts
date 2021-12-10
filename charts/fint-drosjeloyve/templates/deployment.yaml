@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fint-drosjeloyve.name" . }}
+  name: {{ include "fint-drosjeloyve-service.name" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ include "fint-drosjeloyve.name" . }} 
+      app: {{ include "fint-drosjeloyve-service.name" . }} 
   strategy:
     type: {{ .Values.deployment.strategy.type}}
     rollingUpdate: 
@@ -14,10 +14,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "fint-drosjeloyve.name" . }}
+        app: {{ include "fint-drosjeloyve-service.name" . }}
     spec:
       containers:
-        - name: {{ include "fint-drosjeloyve.name" . }}
+        - name: {{ include "fint-drosjeloyve-service.name" . }}
           image: {{ .Values.deployment.containers.repository}}:{{ .Values.deployment.containers.tag}}
           resources:
             limits:
@@ -42,7 +42,7 @@ spec:
             timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds}}
           envFrom:
             - secretRef:
-                name: {{ include "fint-drosjeloyve.name" . }}
+                name: {{ include "fint-drosjeloyve-service.name" . }}
           env:
           {{- range .Values.deployment.env }}
             - {name: {{ .name}}, value: {{ .value | toJson}}}
