@@ -61,8 +61,8 @@ spec:
           {{- end }}
           envFrom:
           {{- toYaml .Values.envFrom | nindent 12 }}
-          env:
-            {{- range .Values.env }}
-            - {name: {{ .name}}, value: {{ .value | toJson}}}
+          env: 
+            {{- if .Values.env }}
+                {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
 {{- end }}

@@ -49,7 +49,7 @@ spec:
             timeoutSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          env:
-            {{- range .Values.env }}
-            - {name: {{ .name}}, value: {{ .value | toJson}}}
+          env: 
+            {{- if .Values.env }}
+                {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
