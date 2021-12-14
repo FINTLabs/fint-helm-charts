@@ -11,11 +11,22 @@ image:
   repository: fintlabsacr.azurecr.io/kunde-portal
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: build.178_fdcba05025496b6e94436b4e2b8da7d92acc6292
 
 imagePullSecrets: []
-nameOverride: kunde-portal
+nameOverride:
 fullnameOverride: ""
+
+onePasswordItem: 
+  name: fint-portal-user
+  create: ture
+
+onePasswordItemZendeskIntegration: 
+  name: zendesk-integration
+  create: ture
+
+environment: beta
+
 
 annotations:
   prometheus.io/scrape: "true"

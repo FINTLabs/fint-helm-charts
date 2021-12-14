@@ -14,13 +14,11 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "fint-kundeportal.labels" . | nindent 6 }}
+      {{- include "fint-kundeportal.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.labels }}
       labels:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- include "fint-kundeportal.selectorLabels" . | nindent 8 }}
       {{- with .Values.annotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
@@ -40,8 +38,8 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              port: {{ .Values.service.port }}
+              path: /actuator/health
           readinessProbe:
             initialDelaySeconds: {{ .Values.initialDelaySeconds }}
             timeoutSeconds: {{ .Values.timeoutSeconds }}
