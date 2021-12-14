@@ -4,6 +4,12 @@
 
 replicaCount: 1
 
+onePasswordItem: 
+  name: fint-unleash
+  create: ture
+
+environment: beta
+
 image:
   repository: fintlabsacr.azurecr.io/unleash
   pullPolicy: IfNotPresent
@@ -33,6 +39,10 @@ strategy:
     maxUnavailable: 1
     maxSurge: 1
 
+initialDelaySeconds: 30
+timeoutSeconds: 5
+httpGetPath: /health
+
 annotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "4242"
@@ -57,19 +67,19 @@ env:
     valueFrom:
       secretKeyRef:
         key: DATABASE_URL
-        name: unleash
+        name: fint-unleash
   - name: GOOGLE_CLIENT_ID
     valueFrom:
       secretKeyRef:
         key: GOOGLE_CLIENT_ID
-        name: unleash
+        name: fint-unleash
   - name: GOOGLE_CLIENT_SECRET
     valueFrom:
       secretKeyRef:
         key: GOOGLE_CLIENT_SECRET
-        name: unleash
+        name: fint-unleash
   - name: GOOGLE_CALLBACK_URL
     valueFrom:
       secretKeyRef:
         key: GOOGLE_CALLBACK_URL
-        name: unleash
+        name: fint-unleash
