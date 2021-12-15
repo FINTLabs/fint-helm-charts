@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 7
+replicaCount: 1
 minReadySeconds: 30
 revisionHistoryLimit: 0
 
@@ -10,7 +10,7 @@ image:
   repository: fintlabsacr.azurecr.io/fint-core-explorer
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: build.34_77db18370347d91d6d52d6206c1cc8c974d19d0b
 
 imagePullSecrets: []
 nameOverride: fint-core-explorer
@@ -29,6 +29,17 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: fint-core-explorer
+  secrets:
+    - name: fint-core-explorer-token-9p8gv
+
+rbac:
+  create: true
+
+onePasswordItem: 
+  name: fint-core-explorer-token-9p8gv
+  create: ture
+
+environment: beta
 
 labels:
   io.kompose.service: fint-core-explorer
