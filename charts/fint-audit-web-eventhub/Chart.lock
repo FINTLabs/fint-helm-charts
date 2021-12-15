@@ -1,0 +1,6 @@
+dependencies:
+- name: fint-library
+  repository: file://../fint-library
+  version: 0.1.0
+digest: sha256:c7e8cca757a3a5a433f3cdaad523ecf452065b9035957d0b11f33ebcb9ec9a81
+generated: "2021-12-15T12:35:44.635146+01:00"
