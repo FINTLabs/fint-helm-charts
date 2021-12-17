@@ -24,6 +24,10 @@ spec:
       annotations:
       {{- end }}
     spec:
+      {{- with .Values.restartPolicy }}
+      restartPolicy:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8  }}
@@ -33,7 +37,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: {{ .Values.service.name  | quote | default "http" }}
               containerPort: {{ .Values.containerPort }}
               protocol: TCP
           {{- with .Values.livenessProbe }}
@@ -45,7 +49,7 @@ spec:
             timeoutSeconds: {{.Values.timeoutSeconds }}
             httpGet:
               port: {{ .Values.service.port }}
-              path: {{ .Values.httpGetPath }}
+              path: {{ .Values.httpGetPath | default "/" }}
               {{- with .Values.httpHeaders }}
               httpHeaders:
               {{- toYaml . | nindent 14  }}
