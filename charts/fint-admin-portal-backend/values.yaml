@@ -1,8 +1,9 @@
-# Default values for fint-admin-portal.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+#This is an example for a values.file to use for this library
 
 replicaCount: 1
+minReadySeconds: 30
+revisionHistoryLimit: 10
+progressDeadlineSeconds: 600
 
 image:
   repository: fintlabsacr.azurecr.io/admin-portal
@@ -14,18 +15,59 @@ imagePullSecrets: []
 nameOverride: admin-portal
 fullnameOverride: ""
 
-secretRef: fint-portal-user
-configMapRef: fint-environment
+annotations:
+
+onePasswordItem: 
+  name: fint-portal-user
+  create: ture
+
+environment: beta
+
+labels:
+  io.kompose.service: admin-portal
+
+initialDelaySeconds: 30
+timeoutSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 8081
+  
+httpGetPath:
+
+httpHeaders:
+
+strategy:
+  type: Recreate
+
+restartPolicy: Always
+
+selector:
+  io.kompose.service: admin-portal
+
+envFrom:
+  - secretRef: 
+      name: fint-portal-user
+  - configMapRef:
+      name: fint-environment
+
+containerPort: 8081
+
+volumeMounts:
+
+volumes:
 
 service:
+  name:
   type: LoadBalancer
   port: 8081
-  labels:
-    io.kompose.service: admin-portal
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  labels:
+    io.kompose.service: admin-portal
 
-resources: 
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -40,3 +82,45 @@ resources:
 env:
   - name: TZ
     value: Europe/Oslo
+  - name: fint.ldap.url
+    value: ldap://10.0.0.50
+  - name: fint.ldap.component-base
+    value: ou=components,o=fint
+  - name: fint.ldap.contact-base
+    value: ou=contacts,o=fint
+  - name: fint.ldap.organisation-base
+    value: ou=organisations,o=fint
+  - name: fint.ldap.access.template-base
+    value: ou=access,o=fint
+  - name: fint.ldap.user
+    valueFrom:
+      secretKeyRef:
+        name: fint-portal-user
+        key: fint.ldap.user
+  - name: fint.ldap.password
+    valueFrom:
+      secretKeyRef:
+        name: fint-portal-user
+        key: fint.ldap.password
+  - name: fint.nam.oauth.idp-hostname
+    value: idp.felleskomponent.no
+  - name: fint.nam.oauth.clientId
+    valueFrom:
+      secretKeyRef:
+        name: fint-portal-user
+        key: fint.nam.oauth.clientId
+  - name: fint.nam.oauth.clientSecret
+    valueFrom:
+      secretKeyRef:
+        name: fint-portal-user
+        key: fint.nam.oauth.clientSecret
+  - name: fint.nam.oauth.username
+    valueFrom:
+      secretKeyRef:
+        name: fint-portal-user
+        key: fint.nam.oauth.username
+  - name: fint.nam.oauth.password
+    valueFrom:
+      secretKeyRef:
+        name: fint-portal-user
+        key: fint.nam.oauth.password
