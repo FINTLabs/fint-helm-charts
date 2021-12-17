@@ -48,7 +48,7 @@ spec:
             initialDelaySeconds: {{.Values.initialDelaySeconds }}
             timeoutSeconds: {{.Values.timeoutSeconds }}
             httpGet:
-              port: {{ .Values.service.port }}
+              port: {{ .Values.service.port | default .Values.containerPort }}
               path: {{ .Values.httpGetPath | default "/" }}
               {{- with .Values.httpHeaders }}
               httpHeaders:
