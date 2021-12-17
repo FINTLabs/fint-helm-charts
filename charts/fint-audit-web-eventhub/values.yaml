@@ -50,7 +50,7 @@ volumeMounts:
 volumes:
 
 service:
-  name: "8080"
+  name: 
   type: LoadBalancer
   port: 8080
   annotations:
