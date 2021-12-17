@@ -18,7 +18,7 @@ nameOverride:
 fullnameOverride: ""
 
 onePasswordItem: 
-  name: fint-portal-user
+  name: fint-portal-user-kundeportal
   create: ture
 
 onePasswordItemZendeskIntegration: 
@@ -50,7 +50,7 @@ selector:
 
 envFrom:
   - secretRef: 
-      name: fint-portal-user
+      name: fint-portal-user-kundeportal
 
 containerPort: 8080
 
@@ -134,7 +134,7 @@ test_runner:
   containerPort: 8082
   envFrom:
     - secretRef:
-        name: fint-portal-user
+        name: fint-portal-user-kundeportal
   env:
     - name: server.port
       value: "8082"
@@ -153,7 +153,7 @@ link_walker:
   containerPort: 8081
   envFrom:
     - secretRef:
-        name: fint-portal-user
+        name: fint-portal-user-kundeportal
   env:
     - name: TZ
       value: Europe/Oslo
@@ -177,7 +177,7 @@ zendesk_integration:
   containerPort: 8083
   envFrom:
     - secretRef:
-        name: fint-portal-user
+        name: fint-portal-user-kundeportal
     - secretRef:
         name: zendesk-integration
   env:
