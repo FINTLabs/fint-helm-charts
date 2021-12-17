@@ -43,6 +43,8 @@ strategy:
     maxUnavailable: 0
     maxSurge: 1
 
+restartPolicy: Always
+
 selector:
   io.kompose.service: fint-kunde-portal
 
