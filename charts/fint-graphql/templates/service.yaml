@@ -16,4 +16,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "fint-graphql.labels" . | nindent 4 }}
+    {{- include "fint-graphql.selectorLabels" . | nindent 4 }}

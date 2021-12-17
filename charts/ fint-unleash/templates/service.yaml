@@ -15,7 +15,5 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-  {{- with .Values.service.selector }}
   selector:
-      {{- toYaml . | nindent 4  }}
-    {{- end }}
+    {{- include "fint-unleash.selectorLabels" . | nindent 4 }}
