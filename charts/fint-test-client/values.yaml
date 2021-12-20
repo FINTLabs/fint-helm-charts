@@ -2,40 +2,32 @@
 
 replicaCount: 1
 minReadySeconds: 30
-revisionHistoryLimit: 10
-progressDeadlineSeconds: 600
+revisionHistoryLimit: 0
+progressDeadlineSeconds:
 
 image:
-  repository: fintlabsacr.azurecr.io/kunde-portal
+  repository: fintlabsacr.azurecr.io/fint-test-client
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: master.3
 
 imagePullSecrets: []
-nameOverride: kunde-portal
+nameOverride: test-client
 fullnameOverride: ""
 
 annotations:
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "80"
-  prometheus.io/path: "/actuator/prometheus"
 
 labels:
-  io.kompose.service: fint-kunde-portal
+  io.kompose.service: test-client
 
 initialDelaySeconds: 30
 timeoutSeconds: 5
 
 livenessProbe:
-  httpGet:
-    path: /
-    port: http
   
-httpGetPath: /actuator/health
+httpGetPath:
 
 httpHeaders:
-  - name: x-nin
-    value: '0'
 
 strategy:
   type: RollingUpdate
@@ -46,31 +38,25 @@ strategy:
 restartPolicy: Always
 
 selector:
-  io.kompose.service: fint-kunde-portal
+  io.kompose.service: test-client
 
 envFrom:
-  - secretRef: 
-      name: fint-portal-user
 
-containerPort: 8080
+containerPort: 80
 
 volumeMounts:
-  - name: credentials
-    mountPath: /credentialsa
+ 
 
 volumes:
-  - name: nginx-kunde-portal
-    configMap:
-      name: nginx-kunde-portal
 
 service:
-  name: "80"
+  name: 
   type: LoadBalancer
   port: 80
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
   selector:
-    io.kompose.service: fint-kunde-portal
+    io.kompose.service: test-client
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -78,20 +64,12 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: "2"
-    memory: "2Gi"
+    memory: "256Mi"
+    cpu: "500m"
   requests:
-    cpu: "250m"
-    memory: "1Gi"
+    cpu: "100m"
+    memory: "32Mi"
 
 env:
   - name: TZ
     value: Europe/Oslo
-  - name: fint.client-config.test-service-base-url
-    value: ""
-  - name: fint.client-config.linkwalker-base-url
-    value: ""
-  - name: logging.level.no.fint.portal.security
-    value: debug
-  - name: fint.unleash.api
-    value: http://unleash-server:4242/api/
