@@ -1,0 +1,21 @@
+{{- define "lib-chart.service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "lib-chart.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+      {{- toYaml . | nindent 4  }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: {{ .Values.service.name | quote | default "http" }}
+  selector:
+    {{- include "lib-chart.selectorLabels" . | nindent 4 }}
+{{- end }}
