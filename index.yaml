@@ -180,4 +180,19 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/kulturtanken-1.0.0/kulturtanken-1.0.0.tgz
     version: 1.0.0
+  reposilite:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-12-20T13:48:41.740256308Z"
+    dependencies:
+    - name: fint-library
+      repository: file://../fint-library
+      version: 0.1.0
+    description: A Helm chart for reposilite
+    digest: bcca67bcc8cba8df9a0b168accfba9a9e1fb1354e3b25d45f7f91bef4a475ccc
+    name: reposilite
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/reposilite-0.1.0/reposilite-0.1.0.tgz
+    version: 0.1.0
 generated: "2021-11-24T21:42:37.746527728Z"
