@@ -143,6 +143,17 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-graphql-0.1.0/fint-graphql-0.1.0.tgz
     version: 0.1.0
+  fint-library:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2021-12-20T14:37:53.347453064Z"
+    description: A Helm chart for fint-library
+    digest: b1ee7ad9bd824269dc8da7621bc5577508f908012acd3456ec8df3582170bd89
+    name: fint-library
+    type: library
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-library-0.1.0/fint-library-0.1.0.tgz
+    version: 0.1.0
   fint-oneroster-rest-provider:
   - apiVersion: v2
     appVersion: 3.8.11
@@ -154,6 +165,21 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-oneroster-rest-provider-1.0.0/fint-oneroster-rest-provider-1.0.0.tgz
     version: 1.0.0
+  fint-test-client:
+  - apiVersion: v2
+    appVersion: 1.2.5
+    created: "2021-12-20T14:37:53.509068739Z"
+    dependencies:
+    - name: fint-library
+      repository: file://../fint-library
+      version: 0.1.0
+    description: A Helm chart for fint-test-client
+    digest: cd176d4595e0c7d8c22b31f64422fea83be344e86697463bc2ebb514353576dd
+    name: fint-test-client
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-test-client-0.1.0/fint-test-client-0.1.0.tgz
+    version: 0.1.0
   fint-vigokv-adapter:
   - apiVersion: v2
     appVersion: 0.3.0
