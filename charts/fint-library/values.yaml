@@ -20,9 +20,6 @@ annotations:
   prometheus.io/port: "80"
   prometheus.io/path: "/actuator/prometheus"
 
-labels:
-  io.kompose.service: fint-kunde-portal
-
 initialDelaySeconds: 30
 timeoutSeconds: 5
 
@@ -45,9 +42,6 @@ strategy:
 
 restartPolicy: Always
 
-selector:
-  io.kompose.service: fint-kunde-portal
-
 envFrom:
   - secretRef: 
       name: fint-portal-user
@@ -56,7 +50,7 @@ containerPort: 8080
 
 volumeMounts:
   - name: credentials
-    mountPath: /credentialsa
+    mountPath: /credentials
 
 volumes:
   - name: nginx-kunde-portal
@@ -64,7 +58,7 @@ volumes:
       name: nginx-kunde-portal
 
 service:
-  name: "80"
+  name: 
   type: LoadBalancer
   port: 80
   annotations:
