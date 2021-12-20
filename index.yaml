@@ -154,6 +154,21 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-oneroster-rest-provider-1.0.0/fint-oneroster-rest-provider-1.0.0.tgz
     version: 1.0.0
+  fint-vigokv-adapter:
+  - apiVersion: v2
+    appVersion: 0.3.0
+    created: "2021-12-20T12:15:40.256112413Z"
+    dependencies:
+    - name: fint-library
+      repository: file://../fint-library
+      version: 0.1.0
+    description: A Helm chart for fint-vigokv-adapter
+    digest: 2f1eb38209ec6ee29a7a979d42b8e93acd033a8fad636dcf4244128f6c5829a1
+    name: fint-vigokv-adapter
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-vigokv-adapter-0.1.0/fint-vigokv-adapter-0.1.0.tgz
+    version: 0.1.0
   kulturtanken:
   - apiVersion: v2
     appVersion: 3.9.0
