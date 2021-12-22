@@ -1,0 +1,82 @@
+# Default values for fint-graphql.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+minReadySeconds: 30
+revisionHistoryLimit: 10
+progressDeadlineSeconds: 600
+
+image:
+  repository: fintlabsacr.azurecr.io/kunde-selvregistrering
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: kunde-selvregistrering
+fullnameOverride: ""
+
+annotations:
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "8080"
+  # prometheus.io/path: "/actuator/prometheus"
+
+labels:
+  io.kompose.service: fint-kunde-selvregistrering
+
+initialDelaySeconds: 30
+timeoutSeconds: 5
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+
+selector:
+  io.kompose.service: fint-kunde-selvregistrering
+
+envFrom:
+  - secretRef: 
+      name: fint-portal-user
+
+containerPort: 8080
+
+volumes:
+  - name: nginx-kunde-portal
+    configMap:
+      name: nginx-kunde-portal
+
+service:
+  name: "80"
+  type: LoadBalancer
+  port: 8080
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  selector:
+    io.kompose.service: fint-kunde-selvregistrering
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: "2"
+    memory: "2Gi"
+  requests:
+    cpu: "250m"
+    memory: "1Gi"
+
+env:
+  - name: TZ
+    value: Europe/Oslo
+  - name: fint.client-config.test-service-base-url
+    value: ""
+  - name: fint.client-config.linkwalker-base-url
+    value: ""
+  - name: logging.level.no.fint.portal.security
+    value: debug
+  - name: fint.unleash.api
+    value: http://unleash-server:4242/api/
