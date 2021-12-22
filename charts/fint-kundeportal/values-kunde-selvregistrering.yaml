@@ -5,51 +5,59 @@
 replicaCount: 1
 minReadySeconds: 30
 revisionHistoryLimit: 10
-progressDeadlineSeconds: 600
+progressDeadlineSeconds: 60
+
+onePasswordItem: 
+  name: fint-portal-user-kundeportal
+  create: false
+
+onePasswordItemZendeskIntegration: 
+  name: zendesk-integration
+  create: false
+
+configmap:
+  create: false
 
 image:
   repository: fintlabsacr.azurecr.io/kunde-selvregistrering
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: e69d317
 
 imagePullSecrets: []
 nameOverride: kunde-selvregistrering
 fullnameOverride: ""
 
 annotations:
-  # prometheus.io/scrape: "true"
-  # prometheus.io/port: "8080"
-  # prometheus.io/path: "/actuator/prometheus"
+
 
 labels:
-  io.kompose.service: fint-kunde-selvregistrering
+  io.kompose.service: kunde-selvregistrering
 
 initialDelaySeconds: 30
 timeoutSeconds: 5
 
 strategy:
-  type: RollingUpdate
   rollingUpdate:
     maxUnavailable: 0
     maxSurge: 1
 
 selector:
-  io.kompose.service: fint-kunde-selvregistrering
+  io.kompose.service: kunde-selvregistrering
 
 envFrom:
-  - secretRef: 
+  - configMapRef:
+      name: fint-environment
+  - secretRef:
       name: fint-portal-user
 
 containerPort: 8080
 
 volumes:
-  - name: nginx-kunde-portal
-    configMap:
-      name: nginx-kunde-portal
+
 
 service:
-  name: "80"
+  name:
   type: LoadBalancer
   port: 8080
   annotations:
@@ -70,13 +78,18 @@ resources:
     memory: "1Gi"
 
 env:
-  - name: TZ
-    value: Europe/Oslo
-  - name: fint.client-config.test-service-base-url
-    value: ""
-  - name: fint.client-config.linkwalker-base-url
-    value: ""
-  - name: logging.level.no.fint.portal.security
-    value: debug
-  - name: fint.unleash.api
-    value: http://unleash-server:4242/api/
+
+nginx:
+  create: false 
+
+frontend:
+  create: false 
+
+test_runner:
+  create: false 
+
+link_walker:
+  create: false 
+
+zendesk_integration:
+  create: false 

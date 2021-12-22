@@ -57,6 +57,7 @@ spec:
             {{- if .Values.env }}
                 {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
+        {{- if .Values.nginx.create -}}
         - name: {{ .Values.nginx.name }}
           image: {{ .Values.nginx.image }}
           resources:
@@ -71,6 +72,8 @@ spec:
           volumeMounts:
               {{- toYaml . | nindent 12  }}
           {{- end }}
+         {{- end }}
+        {{- if .Values.frontend.create -}}
         - name: {{ .Values.frontend.name }}
           image: {{ .Values.frontend.image }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -82,6 +85,8 @@ spec:
             {{- range .Values.frontend.env }}
             - {name: {{ .name}}, value: {{ .value | toJson}}}
             {{- end }}  
+        {{- end }}
+        {{- if .Values.test_runner.create -}}
         - name: {{ .Values.test_runner.name }}
           image: {{ .Values.test_runner.image }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -95,6 +100,8 @@ spec:
             {{- range .Values.test_runner.env }}
             - {name: {{ .name}}, value: {{ .value | toJson}}}
             {{- end }}
+        {{- end }}
+        {{- if .Values.link_walker.create -}}
         - name: {{ .Values.link_walker.name }}
           image: {{ .Values.link_walker.image }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -108,6 +115,8 @@ spec:
             {{- range .Values.link_walker.env }}
             - {name: {{ .name}}, value: {{ .value | toJson}}}
             {{- end }}
+        {{- end }}
+        {{- if .Values.zendesk_integration.create -}}
         - name: {{ .Values.zendesk_integration.name }}
           image: {{ .Values.zendesk_integration.image }}
           resources:
@@ -120,3 +129,4 @@ spec:
             {{- range .Values.zendesk_integration.env }}
             - {name: {{ .name}}, value: {{ .value | toJson}}}
             {{- end }}
+        {{- end }}
