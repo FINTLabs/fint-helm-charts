@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}
   labels:
-    {{- include "lib-chart.labels" . | nindent 4 }}
+    {{- include "fint-jenkins.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   minReadySeconds: {{ .Values.minReadySeconds }}
@@ -15,15 +15,22 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "lib-chart.selectorLabels" . | nindent 8 }}
+      {{- include "fint-jenkins.selectorLabels" . | nindent 8 }}
   template:
     metadata:
       labels:
-        {{- include "lib-chart.selectorLabels" . | nindent 8 }}
+        {{- include "fint-jenkins.selectorLabels" . | nindent 8 }}
       {{- with .Values.annotations }}
       annotations:
+       {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      {{- with .Values.securityContext }}
+      securityContext:
+       {{- toYaml . | nindent 8 }}
+      {{- end }}
+        runAsUser: 1000
+        fsGroup: 1000
       {{- with .Values.restartPolicy }}
       restartPolicy:
         {{- toYaml . | nindent 8 }}
@@ -39,6 +46,10 @@ spec:
           ports:
             - name: {{ .Values.service.name  | quote | default "http" }}
               containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+          ports:
+            - name: {{ .Values.service.name  | quote | default "http" }}
+              containerPort: {{ .Values.containerPort2 }}
               protocol: TCP
           {{- with .Values.livenessProbe }}
           livenessProbe:
@@ -66,4 +77,16 @@ spec:
             {{- if .Values.env }}
                 {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
+        - name: {{ .Values.jenkinsdockerslave.name }}
+          image: {{ .Values.jenkinsdockerslave.image }}
+          resources:
+          {{- toYaml .Values.jenkinsdockerslave.resources | nindent 12 }}
+          env:
+            {{- if .Values.jenkinsdockerslave.env }}
+                {{- toYaml .Values.jenkinsdockerslave.env | nindent 12 }}
+            {{- end }}
+          {{- with .Values.jenkinsdockerslave.volumeMounts }}
+          volumeMounts:
+              {{- toYaml . | nindent 12  }}
+          {{- end }}
 {{- end }}

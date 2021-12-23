@@ -1,70 +1,68 @@
 #This is an example for a values.file to use for this library
 
-replicaCount: 1
+replicaCount: 5
 minReadySeconds: 30
-revisionHistoryLimit: 10
+revisionHistoryLimit: 0
 progressDeadlineSeconds: 600
 
 image:
-  repository: fintlabsacr.azurecr.io/kunde-portal
+  repository: fintlabsacr.azurecr.io/jenkins-slave
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: 2021-02-22
 
 imagePullSecrets: []
-nameOverride: kunde-portal
+nameOverride: jenkins-slave
 fullnameOverride: ""
 
 annotations:
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "80"
-  prometheus.io/path: "/actuator/prometheus"
 
 initialDelaySeconds: 30
 timeoutSeconds: 5
 
 livenessProbe:
-  httpGet:
-    path: /
-    port: http
   
-httpGetPath: /actuator/health
+httpGetPath:
+
+securityContext:
+  privileged: true
 
 httpHeaders:
-  - name: x-nin
-    value: '0'
 
 strategy:
   type: RollingUpdate
   rollingUpdate:
-    maxUnavailable: 0
-    maxSurge: 1
+    maxUnavailable: 2
+    maxSurge: 2
 
 restartPolicy: Always
 
 envFrom:
-  - secretRef: 
-      name: fint-portal-user
 
 containerPort: 8080
 
 volumeMounts:
-  - name: credentials
-    mountPath: /credentials
+  - name: host-tmp
+    mountPath: /tmp
 
 volumes:
-  - name: nginx-kunde-portal
-    configMap:
-      name: nginx-kunde-portal
+  - name: dind-storage
+    emptyDir:
+      sizeLimit: "10Gi"
+  - name: host-tmp
+    hostPath:
+      path: /tmp
 
 service:
   name: 
   type: LoadBalancer
-  port: 80
+  port: 8080
   annotations:
+    kompose.cmd: kompose convert -f /Users/markusmedalen/Documents/repo/fint-jenkins/docker-compose.yml
+    kompose.version: 1.16.0 (HEAD)
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
   selector:
-    io.kompose.service: fint-kunde-portal
+    io.kompose.service: jenkins-master
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -81,11 +79,26 @@ resources:
 env:
   - name: TZ
     value: Europe/Oslo
-  - name: fint.client-config.test-service-base-url
-    value: ""
-  - name: fint.client-config.linkwalker-base-url
-    value: ""
-  - name: logging.level.no.fint.portal.security
-    value: debug
-  - name: fint.unleash.api
-    value: http://unleash-server:4242/api/
+  - name: EXECUTORS
+    value: "1"
+  - name: MASTER
+    value: http://jenkins-master:8080/
+  - name: DOCKER_HOST
+    value: tcp://localhost:2375
+  
+jenkinsdockerslave:
+  name: jenkins-docker-slave
+  image: docker:19.03-dind
+  env:
+    - name: DOCKER_TLS_CERTDIR
+      value: ''
+  securityContext:
+    privileged: true
+  resources:
+    limits:
+      ephemeral-storage: "10Gi"
+    volumeMounts:
+    - name: host-tmp
+      mountPath: /tmp
+    - name: dind-storage
+      mountPath: /var/lib/docker

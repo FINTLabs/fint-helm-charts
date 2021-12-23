@@ -1,4 +1,4 @@
-{{- define "lib-chart.labels" -}}
+{{- define "fint-jenkins.labels" -}}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
