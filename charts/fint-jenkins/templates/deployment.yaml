@@ -1,4 +1,3 @@
-{{- define "lib-chart.deployment" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,8 +28,6 @@ spec:
       securityContext:
        {{- toYaml . | nindent 8 }}
       {{- end }}
-        runAsUser: 1000
-        fsGroup: 1000
       {{- with .Values.restartPolicy }}
       restartPolicy:
         {{- toYaml . | nindent 8 }}
@@ -43,28 +40,17 @@ spec:
         - name: {{ .Release.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: {{ .Values.service.name  | quote | default "http" }}
-              containerPort: {{ .Values.containerPort }}
-              protocol: TCP
-          ports:
-            - name: {{ .Values.service.name  | quote | default "http" }}
-              containerPort: {{ .Values.containerPort2 }}
-              protocol: TCP
-          {{- with .Values.livenessProbe }}
-          livenessProbe:
-          {{- toYaml . | nindent 12  }}
+          {{- with .Values.securityContextContainer }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
           {{- end }}
-          readinessProbe:
-            initialDelaySeconds: {{.Values.initialDelaySeconds }}
-            timeoutSeconds: {{.Values.timeoutSeconds }}
-            httpGet:
-              port: {{ .Values.service.port | default .Values.containerPort }}
-              path: {{ .Values.httpGetPath | default "/" }}
-              {{- with .Values.httpHeaders }}
-              httpHeaders:
-              {{- toYaml . | nindent 14  }}
-              {{- end }}
+          ports: 
+            {{- with .Values.containerPort }}
+              {{- toYaml . | nindent 12  }}
+            {{- end }}
+            {{- with .Values.containerPort2 }}
+              {{- toYaml . | nindent 12  }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
@@ -77,16 +63,19 @@ spec:
             {{- if .Values.env }}
                 {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
+        {{- if .Values.jenkinsdockerslave.create }}
         - name: {{ .Values.jenkinsdockerslave.name }}
           image: {{ .Values.jenkinsdockerslave.image }}
-          resources:
-          {{- toYaml .Values.jenkinsdockerslave.resources | nindent 12 }}
+          {{- if .Values.jenkinsdockerslave.env }}
           env:
-            {{- if .Values.jenkinsdockerslave.env }}
-                {{- toYaml .Values.jenkinsdockerslave.env | nindent 12 }}
-            {{- end }}
-          {{- with .Values.jenkinsdockerslave.volumeMounts }}
-          volumeMounts:
-              {{- toYaml . | nindent 12  }}
+            {{- toYaml .Values.jenkinsdockerslave.env | nindent 12 }}
           {{- end }}
-{{- end }}
+          {{- with .Values.jenkinsdockerslave.securityContextContainer }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- toYaml .Values.jenkinsdockerslave.volumeMounts | nindent 12 }}
+          resources:
+            {{- toYaml .Values.jenkinsdockerslave.resources | nindent 12 }}
+        {{- end }}

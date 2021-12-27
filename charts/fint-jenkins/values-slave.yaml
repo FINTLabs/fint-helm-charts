@@ -17,14 +17,25 @@ fullnameOverride: ""
 
 annotations:
 
-initialDelaySeconds: 30
+storageClass:     
+  create: false 
+
+rbac:
+  create: false
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false 
+
+persistence:
+  enabled: false
+
+initialDelaySeconds: 120
 timeoutSeconds: 5
 
-livenessProbe:
-  
-httpGetPath:
-
 securityContext:
+
+securityContextContainer:
   privileged: true
 
 httpHeaders:
@@ -39,7 +50,10 @@ restartPolicy: Always
 
 envFrom:
 
-containerPort: 8080
+containerPort: 
+  - name: http
+    containerPort: 8080
+    protocol: TCP
 
 volumeMounts:
   - name: host-tmp
@@ -56,9 +70,11 @@ volumes:
 service:
   name: 
   type: LoadBalancer
-  port: 8080
+  ports:
+    - name: http
+      port: 8080
   annotations:
-    kompose.cmd: kompose convert -f /Users/markusmedalen/Documents/repo/fint-jenkins/docker-compose.yml
+    kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.16.0 (HEAD)
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
   selector:
@@ -87,17 +103,18 @@ env:
     value: tcp://localhost:2375
   
 jenkinsdockerslave:
+  create: true
   name: jenkins-docker-slave
   image: docker:19.03-dind
   env:
     - name: DOCKER_TLS_CERTDIR
       value: ''
-  securityContext:
+  securityContextContainer:
     privileged: true
   resources:
     limits:
       ephemeral-storage: "10Gi"
-    volumeMounts:
+  volumeMounts:
     - name: host-tmp
       mountPath: /tmp
     - name: dind-storage
