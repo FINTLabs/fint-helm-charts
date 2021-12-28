@@ -1,0 +1,13 @@
+{{- if .Values.storageClass.create }}
+apiVersion: storage.k8s.io/v1beta1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageClass.name }}
+  labels:
+    {{- include "fint-jenkins.labels" . | nindent 4 }}
+provisioner: kubernetes.io/azure-disk
+reclaimPolicy: Retain
+parameters:
+  storageaccounttype: {{ .Values.storageClass.storageaccounttype }}
+  kind: {{ .Values.storageClass.kind }}
+{{- end }}

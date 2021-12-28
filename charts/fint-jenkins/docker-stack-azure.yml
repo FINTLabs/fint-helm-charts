@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+  master:
+    environment: 
+      TZ: Europe/Oslo
+      JAVA_OPTS: "-Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=300"
+    image: dtr.fintlabs.no/jenkins/master:latest
+    ports: 
+      - 8080:8080
+      - 50000:50000
+    volumes: 
+      - jenkins-home:/var/jenkins_home
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+  slave:
+    environment: 
+      TZ: Europe/Oslo
+      EXECUTORS: 1
+    image: dtr.fintlabs.no/jenkins/slave:latest
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    depends_on: 
+      - master
+    deploy:
+      mode: replicated
+      replicas: 5
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+volumes:
+  jenkins-home:
+    driver: cloudstor:azure
+    driver_opts:
+      uid: 1000
+      gid: 1000
+      share: jenkins-home
