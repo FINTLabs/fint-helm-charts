@@ -20,11 +20,6 @@ persistence:
   storageClass: managed-premium-retain
   accessMode: ReadWriteOnce
   size: 5Gi
-
-rbac:
-  create: false 
-  name: jenkins-role
-  clusterRoleName: jenkins-rolebinding
   
 serviceAccount:
   # Specifies whether a service account should be created
