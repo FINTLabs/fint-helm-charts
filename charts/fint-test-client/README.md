@@ -1,9 +1,10 @@
-# Test-client
+# fint-test-client
 
-How to install test-client
+How to install fint-test-client
 
-### Example
-`helm install test-client -./test-client/`
+This helm chart uses helm library fint-library and therefore needs to run 
+`helm dependency update fint-test-client/`
+Before installing the chart
 
-
-link: 
+Afther the dependency is updated you can run 
+`helm install fint-test-client ./fint-test-client/`
