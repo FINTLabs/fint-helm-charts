@@ -20,9 +20,6 @@ annotations:
 storageClass:     
   create: false 
 
-rbac:
-  create: false
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: false 
