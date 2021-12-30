@@ -1,6 +1,6 @@
 apiVersion: v2
 name: fint-audit-web-eventhub
-description: A Helm chart for Kubernetes
+description: A Helm chart for fint-audit-web-eventhub
 
 # A chart can be either an 'application' or a 'library' chart.
 #
