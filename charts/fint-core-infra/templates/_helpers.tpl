@@ -1,33 +1,15 @@
 {{/*
-Calulate memory limits from xmx value for Consumer
+Creates One Password Vault path based on environment
 */}}
-{{- define "fint-core-stack.consumer.xmx" }}
-{{- round (div (mul (add .Values.consumer.deployment.java.xmx 256) 10) 9) 0 }}
-{{- end }}
-
-{{/*
-Calulate memory limits from xmx value for Provider
-*/}}
-{{- define "fint-core-stack.provider.xmx" }}
-{{- round (div (mul (add .Values.provider.deployment.java.xmx 256) 10) 9) 0 }}
-{{- end }}
-
-{{/*
-Creates defaultBaseUrl based on environment
-*/}}
-{{- define "fint-core-stack.defaultBaseUrl" }}
-{{- required "Deployment environment is missing!" .Values.environment }}
-{{- if eq .Values.environment "pwf" }}
-{{- printf "https://play-with-fint.felleskomponent.no" | quote }}
-{{- else }}
-{{- printf "https://%s.felleskomponent.no" .Values.environment | quote}}
-{{- end }}
+{{- define "fint-core-infra.onePasswordVaultPath" -}}
+{{- $env := required "Environment is required. You can add it by adding --set environment=beta e.g." .Values.environment }}
+{{- printf "vaults/aks-%s-vault/items" $env }}
 {{- end }}
 
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "fint-core-stack.name" -}}
+{{- define "fint-core-infra.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -36,7 +18,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "fint-core-stack.fullname" -}}
+{{- define "fint-core-infra.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -52,16 +34,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "fint-core-stack.chart" -}}
+{{- define "fint-core-infra.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "fint-core-stack.labels" -}}
-helm.sh/chart: {{ include "fint-core-stack.chart" . }}
-{{ include "fint-core-stack.selectorLabels" . }}
+{{- define "fint-core-infra.labels" -}}
+helm.sh/chart: {{ include "fint-core-infra.chart" . }}
+{{ include "fint-core-infra.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -71,7 +53,18 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "fint-core-stack.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "fint-core-stack.name" . }}
+{{- define "fint-core-infra.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "fint-core-infra.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "fint-core-infra.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "fint-core-infra.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
 {{- end }}

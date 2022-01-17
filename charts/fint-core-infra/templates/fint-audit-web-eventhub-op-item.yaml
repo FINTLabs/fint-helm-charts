@@ -4,4 +4,4 @@ metadata:
  name: fint-audit-web-eventhub
  labels:
 spec:
- itemPath: {{ include "fint-core-stack.onePasswordVaultPath" . }}/"fint-audit-web-eventhub"
+ itemPath: {{ include "fint-core-infra.onePasswordVaultPath" . }}/fint-audit-web-eventhub

@@ -1,6 +1,6 @@
 apiVersion: v2
-name: fint-core-stack
-description: A Helm chart for the FINT Core stack
+name: fint-core-infra
+description: A Helm chart for Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -21,11 +21,7 @@ version: 1.0.0
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "3.9.0"
+appVersion: "1.0.0"
 
 icon: https://www.fintlabs.no/_media/fint-by-vigo-white.svg
 
-# dependencies:
-# - name: fint-core-infra
-#   version: "~1.0.0"
-#   repository: "file://../fint-core-infra"

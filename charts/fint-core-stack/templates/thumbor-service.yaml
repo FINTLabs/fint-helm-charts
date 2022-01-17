@@ -1,0 +1,17 @@
+{{- if .Values.thumbor.create }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    fint.service: thumbor
+  name: thumbor
+spec:
+  ports:
+  - name: 8888-8888
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    fint.service: thumbor
+  type: ClusterIP
+{{- end }}

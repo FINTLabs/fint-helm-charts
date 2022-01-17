@@ -4,4 +4,4 @@ metadata:
  name: fint-events-azure-eventhub
  labels:
 spec:
- itemPath: {{ include "fint-core-stack.onePasswordVaultPath" . }}/"fint-events-azure-eventhub"
+ itemPath: {{ include "fint-core-infra.onePasswordVaultPath" . }}/fint-events-azure-eventhub

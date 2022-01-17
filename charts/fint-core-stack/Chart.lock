@@ -1,0 +1,6 @@
+dependencies:
+- name: fint-core-infra
+  repository: file://../fint-core-infra
+  version: 1.0.0
+digest: sha256:30e889f9078007c8426a528a0fb7dde588bb97d6a08539f7f74aaa6eb917d98c
+generated: "2021-12-08T11:18:08.591319+01:00"
