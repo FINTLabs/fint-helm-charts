@@ -47,7 +47,6 @@ Selector labels
 */}}
 {{- define "fint-kundeportal.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "fint-kundeportal.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*

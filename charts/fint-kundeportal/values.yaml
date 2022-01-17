@@ -36,8 +36,8 @@ annotations:
   prometheus.io/port: "80"
   prometheus.io/path: "/actuator/prometheus"
 
-labels:
-  io.kompose.service: fint-kunde-portal
+#labels:
+#  io.kompose.service: fint-kunde-portal
 
 initialDelaySeconds: 30
 timeoutSeconds: 5
@@ -48,8 +48,8 @@ strategy:
     maxUnavailable: 0
     maxSurge: 1
 
-selector:
-  io.kompose.service: fint-kunde-portal
+#selector:
+#  io.kompose.service: fint-kunde-portal
 
 envFrom:
   - secretRef: 
@@ -68,8 +68,8 @@ service:
   port: 80
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-  selector:
-    io.kompose.service: fint-kunde-portal
+  #selector:
+  #  io.kompose.service: fint-kunde-portal
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
