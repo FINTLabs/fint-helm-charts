@@ -1,19 +1,27 @@
 {{/*
+Calulate memory limits from xmx value for Consumer
+*/}}
+{{- define "fint-core-stack.consumer.xmx" }}
+{{- round (div (mul (add .Values.consumer.deployment.java.xmx 256) 10) 9) 0 }}
+{{- end }}
+
+{{/*
+Calulate memory limits from xmx value for Provider
+*/}}
+{{- define "fint-core-stack.provider.xmx" }}
+{{- round (div (mul (add .Values.provider.deployment.java.xmx 256) 10) 9) 0 }}
+{{- end }}
+
+{{/*
 Creates defaultBaseUrl based on environment
 */}}
-{{- define "fint-core-stack.defaultBaseUrl" -}}
+{{- define "fint-core-stack.defaultBaseUrl" }}
+{{- required "Deployment environment is missing!" .Values.environment }}
 {{- if eq .Values.environment "pwf" }}
 {{- printf "https://play-with-fint.felleskomponent.no" | quote }}
 {{- else }}
 {{- printf "https://%s.felleskomponent.no" .Values.environment | quote}}
 {{- end }}
-{{- end }}
-
-{{/*
-Creates One Password Vault path based on environment
-*/}}
-{{- define "fint-core-stack.onePasswordVaultPath" -}}
-{{- printf "vaults/aks-%s-vault/items" .Values.environment }}
 {{- end }}
 
 {{/*
@@ -66,15 +74,4 @@ Selector labels
 {{- define "fint-core-stack.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "fint-core-stack.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "fint-core-stack.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "fint-core-stack.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
 {{- end }}

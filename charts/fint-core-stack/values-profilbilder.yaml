@@ -2,33 +2,33 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-nameOverride: test-stack
-fullnameOverride: test-fullname
+nameOverride: profilbilde
+fullnameOverride: profilbilde
 
 # Environment can be any of these values: api | beta | alpha | pwf
-environment:
+environment: 
 
 thumbor:
-  create: false
+  create: true
 
 consumer:
-  deployment:
+  deployment: 
     image: 
-      repository: 
+      repository: fintlabsacr.azurecr.io/consumer-profilbilde
       pullPolicy: IfNotPresent
-      tag: 
-    contextPath: 
+      tag: build.16
+    contextPath: /
     port: 8080
     resources:
-      limitsCpu:
-      requestsCpu:
+      limitsCpu: '2'
+      requestsCpu: 250m
     readinessProbe:
       initialDelaySeconds: 30
       timeoutSeconds: 5
     overrideOrgId: {}
       # defaultOrgId: fintlabs.no
     java:
-      xmx: 
+      xmx: 2048
     environments: {}
       # - {name: <props>, value: "<value>"}
 
@@ -41,12 +41,12 @@ provider:
     image: 
       repository: fintlabsacr.azurecr.io/provider
       pullPolicy: IfNotPresent
-      tag: 
-    contextPath: 
+      tag: 2.4.2
+    contextPath: /provider/
     port: 8080
     resources: 
-      limitsCpu: 
-      requestsCpu:
+      limitsCpu: '1'
+      requestsCpu: 250m
     readinessProbe:
       initialDelaySeconds: 30
       timeoutSeconds: 5
@@ -54,10 +54,9 @@ provider:
       # enabled: 'false'
       # defaultOrgId: fintlabs.no
     java:
-      xmx: 
+      xmx: 2048
     environments: {}
       # - {name: <props>, value: "<value>"}
-
 
   service:
     port: 8080

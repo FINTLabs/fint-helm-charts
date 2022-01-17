@@ -5,7 +5,6 @@ metadata:
     fint.stack: {{ include "fint-core-stack.name" . }}
     fint.role: provider
     {{- include "fint-core-stack.labels" . | nindent 4 }}
-
   name: provider-{{ include "fint-core-stack.name" . }}
 spec:
   replicas: 1
@@ -25,26 +24,30 @@ spec:
           - secretRef:
               name: fint-events-azure-eventhub
           env:
-            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -Xmx{{ .Values.provider.deployment.java.xmx }} -verbose:gc'}
+            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -Xmx{{ required "Xmx is missing!" .Values.provider.deployment.java.xmx }}M -verbose:gc'}
             - {name: fint.events.orgIds, value: health.fintlabs.no}
             - {name: fint.hazelcast.kubernetes.enabled, value: 'true'}
             - {name: fint.hazelcast.kubernetes.namespace, value: default}
             - {name: fint.hazelcast.kubernetes.labelName, value: fint.stack}
             - {name: fint.hazelcast.kubernetes.labelValue, value: {{ include "fint-core-stack.name" . }}}
-            - {name: server.context-path, value: {{ .Values.provider.deployment.contextPath }}}
+            - {name: server.context-path, value: {{ required "Context path is missing!" .Values.provider.deployment.contextPath }}}
             {{- range .Values.provider.deployment.environments }}
             - {name: {{ .name}}, value: {{ .value }}}
             {{- end }} 
-          image: "{{ .Values.provider.deployment.image.repository }}:{{ .Values.provider.deployment.image.tag }}"
+          image: "{{ required "Image repository uri is missing!" .Values.provider.deployment.image.repository }}:{{ required "Image tag is missing!" .Values.provider.deployment.image.tag }}"
           imagePullPolicy: "{{ .Values.provider.deployment.image.pullPolicy }}"
           name: provider-{{ include "fint-core-stack.name" . }}
           ports:
-            - {containerPort: 8080}
+            - {containerPort: {{ required "Port is missing!" .Values.provider.deployment.port }}}
           readinessProbe:
-            httpGet: {path: {{ .Values.provider.deployment.contextPath }}/health, port: 8080}
-            initialDelaySeconds: 60
-            timeoutSeconds: 5
+            httpGet: {path: {{ required "Context path is missing!" .Values.provider.deployment.contextPath }}health, port: {{ required "Port is missing!" .Values.provider.deployment.port }}}
+            initialDelaySeconds: {{ required "Initial delay seconds is missing!" .Values.provider.deployment.readinessProbe.initialDelaySeconds}}
+            timeoutSeconds: {{ required "Timeout seconds is missing" .Values.provider.deployment.readinessProbe.timeoutSeconds}}
           resources:
-            limits: {memory: 3Gi, cpu: '2'}
-            requests: {memory: 2Gi, cpu: 250m}
+            limits:
+              memory: {{ include "fint-core-stack.provider.xmx" . }}Mi
+              cpu: {{ required "Cpu limits is missing!" .Values.provider.deployment.resources.limitsCpu | quote}}
+            requests: 
+              memory: {{ div (include "fint-core-stack.provider.xmx" . ) 2 }}Mi
+              cpu: {{ required "Cpu requests is missing!" .Values.provider.deployment.resources.requestsCpu}}
       restartPolicy: Always

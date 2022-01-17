@@ -10,5 +10,5 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - {name: '8080', port: 8080}
+    - {name: {{ .Values.provider.service.port | quote}}, port: {{ .Values.provider.service.port }}}
   selector: {fint.stack: {{ include "fint-core-stack.name" . }}, fint.role: provider}
