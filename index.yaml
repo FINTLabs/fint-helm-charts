@@ -4,7 +4,8 @@ entries:
   - apiVersion: v2
     appVersion: 3.8.11
     created: "2021-12-03T12:47:00.004429995Z"
-    description: A Helm chart for a adapter that connects TietoEvry Public 360 to FINT
+    description: A Helm chart for a adapter that connects TietoEvry Public 360 to
+      FINT
     digest: 3ee05656180117b87508893c4b5f494840a4c868e4f26e3a9ed8ad2f706bb3d7
     name: fint-adapter-arkiv
     type: application
@@ -145,6 +146,15 @@ entries:
     version: 0.1.0
   fint-library:
   - apiVersion: v2
+    created: "2022-01-19T09:55:29.516109318Z"
+    description: A Helm chart for fint-library
+    digest: 042ed26c240cfde11c870bfe8259de32ea4b8374395ea47a5218f0d3bb3cd9d1
+    name: fint-library
+    type: library
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-library-0.2.0/fint-library-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: 0.0.1
     created: "2021-12-20T14:37:53.347453064Z"
     description: A Helm chart for fint-library
@@ -221,4 +231,4 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/reposilite-0.1.0/reposilite-0.1.0.tgz
     version: 0.1.0
-generated: "2021-11-24T21:42:37.746527728Z"
+generated: "2022-01-19T09:55:29.516120918Z"
