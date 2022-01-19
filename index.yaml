@@ -146,6 +146,15 @@ entries:
     version: 0.1.0
   fint-library:
   - apiVersion: v2
+    created: "2022-01-19T10:00:42.185560004Z"
+    description: A Helm chart for fint-library
+    digest: 88f1fbdb7c2d3f1f2caf7a509d61377c8e5028cf0cb737f2ce62d763763abebf
+    name: fint-library
+    type: library
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-library-0.3.0/fint-library-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
     created: "2022-01-19T09:55:29.516109318Z"
     description: A Helm chart for fint-library
     digest: 042ed26c240cfde11c870bfe8259de32ea4b8374395ea47a5218f0d3bb3cd9d1
@@ -231,4 +240,4 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/reposilite-0.1.0/reposilite-0.1.0.tgz
     version: 0.1.0
-generated: "2022-01-19T09:55:29.516120918Z"
+generated: "2022-01-19T10:00:42.185584206Z"
