@@ -3,7 +3,7 @@
 apiVersion: onepassword.com/v1
 kind: OnePasswordItem
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Release.Name }}-secret
   labels:
 spec:
   itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Values.onePasswordItem.name }}"
