@@ -6,6 +6,6 @@ metadata:
   name: {{ .Release.Name }}-secret
   labels:
 spec:
-  itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Values.onePasswordItem.name }}"
+  itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Release.Name }}"
 {{- end }}
 {{- end }}
