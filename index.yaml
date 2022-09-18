@@ -208,6 +208,16 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/fint-test-client-0.1.0/fint-test-client-0.1.0.tgz
     version: 0.1.0
+  fint-unleash:
+  - apiVersion: v2
+    created: "2022-09-18T16:12:49.907935264Z"
+    description: A Helm chart for fint-unleash
+    digest: 7ee3b606306e6b726da629362abc11a27aa9e4ceff924be277274d0b9c71cc01
+    name: fint-unleash
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-unleash-1.0.0/fint-unleash-1.0.0.tgz
+    version: 1.0.0
   fint-vigokv-adapter:
   - apiVersion: v2
     appVersion: 0.3.0
@@ -236,6 +246,15 @@ entries:
     version: 1.0.0
   reposilite:
   - apiVersion: v2
+    created: "2022-09-18T16:12:50.13592492Z"
+    description: A Helm chart for reposilite
+    digest: 6506c297a48c7e5e4be22a39bdd9928257b1ba21a9b46e541388283819eb5794
+    name: reposilite
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/reposilite-1.0.0/reposilite-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     appVersion: 1.16.0
     created: "2021-12-20T13:48:41.740256308Z"
     dependencies:
@@ -249,4 +268,4 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/reposilite-0.1.0/reposilite-0.1.0.tgz
     version: 0.1.0
-generated: "2022-01-19T10:06:33.798701088Z"
+generated: "2022-09-18T16:12:50.136127422Z"
