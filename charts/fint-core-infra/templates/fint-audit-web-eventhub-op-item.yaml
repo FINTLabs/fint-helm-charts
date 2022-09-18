@@ -1,7 +1,0 @@
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-metadata:
- name: fint-audit-web-eventhub
- labels:
-spec:
- itemPath: {{ include "fint-core-infra.onePasswordVaultPath" . }}/fint-audit-web-eventhub

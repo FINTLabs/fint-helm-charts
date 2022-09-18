@@ -1,19 +1,6 @@
-# FINT Helm Charts
+# Helm Charts FINTLabs Application Infrastructure Services
 
 Here you can find the sources for FINTs Helm Charts. 
-
-
-## Dry-run a specific version of a adapter
-`helm install --debug --dry-run <name of install app> -f <name of value file> <name of chart>`
-
-### Example from fint-helm-charts/charts/fint-sikri-arkiv-adapter
-`helm install --debug --dry-run fint-sikri-arkiv-adapter -f values-viken.yaml ../fint-sikri-arkiv-adapter/`
-
-### Example from local file system
-`helm install --debug --dry-run profilbilde ./fint-profilbilde-core`
-
-### Example from fint-helm-charts/charts/fint-sikri-arkiv-adapter for dry-run specific adapter, that includes op-time, and where you need to define which environment to deploy.
-`helm install --debug --dry-run fint-sikri-arkiv-adapter -f values-vlfk.yaml ../fint-sikri-arkiv-adapter/ --set environment=beta`
 
 You can find the Helm Chart repository [here](https://fintlabs.github.io/helm-charts/).
 

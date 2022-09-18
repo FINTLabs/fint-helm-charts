@@ -1,9 +1,0 @@
-{{- if .Values.onePasswordItemZendeskIntegration.create -}}
-apiVersion: onepassword.com/v1
-kind: OnePasswordItem
-metadata:
-  name: {{ .Values.onePasswordItemZendeskIntegration.name }}
-  labels:
-spec:
-  itemPath: "vaults/aks-{{ required "Need to define environment!" .Values.environment }}-vault/items/{{ .Values.onePasswordItemZendeskIntegration.name }}"
-{{- end }}
