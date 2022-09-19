@@ -29,8 +29,9 @@ labels:
   app.kubernetes.io/component: operator
   fintlabs.no/team: plattform
 
+environment: alpha
+
 onePasswordItem: 
-  itemPath: "vaults/aks-alpha-vault/items/fint-namerator"
   name: fint-namerator
 
 podAnnotations: 
