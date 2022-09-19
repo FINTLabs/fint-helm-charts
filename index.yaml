@@ -185,6 +185,16 @@ entries:
   fint-namerator:
   - apiVersion: v2
     appVersion: latest
+    created: "2022-09-19T14:20:50.212879627Z"
+    description: A Helm chart for Kubernetes
+    digest: 3940ed37a2a02cd6d8d60027e402076acbb64af867a41f656f9d5305bd91ffb3
+    name: fint-namerator
+    type: application
+    urls:
+    - https://github.com/FINTLabs/helm-charts/releases/download/fint-namerator-0.4.0/fint-namerator-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: latest
     created: "2022-09-19T11:46:02.489236065Z"
     description: A Helm chart for Kubernetes
     digest: c30391dfaa01665fe228fa9a0dbf712dcd764175f41e029b872b2f3a0137aaa0
@@ -299,4 +309,4 @@ entries:
     urls:
     - https://github.com/FINTLabs/helm-charts/releases/download/reposilite-0.1.0/reposilite-0.1.0.tgz
     version: 0.1.0
-generated: "2022-09-19T11:46:02.489265066Z"
+generated: "2022-09-19T14:20:50.212917327Z"
