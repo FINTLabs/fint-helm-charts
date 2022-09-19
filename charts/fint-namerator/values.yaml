@@ -29,6 +29,10 @@ labels:
   app.kubernetes.io/component: operator
   fintlabs.no/team: plattform
 
+onePasswordItem: 
+  itemPath: "vaults/aks-alpha-vault/items/fint-namerator"
+  name: fint-namerator
+
 podAnnotations: 
   prometheus.io/scrape: "true"
   prometheus.io/port: "8080"
